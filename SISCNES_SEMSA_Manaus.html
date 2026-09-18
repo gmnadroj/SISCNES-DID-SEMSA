@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SISCNES-MANAUS | Sistema de Cadastro CNES — SEMSA Manaus</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde-amazonia: #00695C;
+    --verde-escuro:   #004D40;
+    --verde-claro:    #E0F2F1;
+    --azul-sus:       #1565C0;
+    --azul-claro:     #E3F2FD;
+    --teal:           #00897B;
+    --teal-light:     #B2DFDB;
+    --laranja:        #E65100;
+    --cinza-bg:       #F4F6F9;
+    --cinza-borda:    #CFD8DC;
+    --cinza-texto:    #455A64;
+    --branco:         #FFFFFF;
+    --erro:           #C62828;
+    --erro-bg:        #FFEBEE;
+    --ok:             #2E7D32;
+    --ok-bg:          #E8F5E9;
+    --sombra:         0 2px 12px rgba(0,0,0,0.10);
+    --sombra-card:    0 1px 4px rgba(0,0,0,0.08);
+    --radius:         10px;
+    --radius-sm:      6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cinza-bg);
+    color: #263238;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ── TOPO ─────────────────────────────────────────────────── */
+  header {
+    background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--azul-sus) 100%);
+    color: white;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.25);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .header-escudo {
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .header-titles { flex: 1; }
+  .header-titles h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px; font-weight: 700; letter-spacing: .5px;
+    line-height: 1.2;
+  }
+  .header-titles p {
+    font-size: 11.5px; opacity: .80; margin-top: 2px;
+  }
+  .header-badge {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.30);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px; font-weight: 600; letter-spacing: .8px;
+    white-space: nowrap;
+  }
+
+  /* ── BARRA DE PROGRESSO ────────────────────────────────────── */
+  .progress-bar-wrap {
+    background: rgba(0,0,0,0.20);
+    padding: 0 28px;
+    overflow-x: auto;
+  }
+  .progress-steps {
+    display: flex;
+    min-width: 560px;
+  }
+  .step-tab {
+    flex: 1;
+    padding: 10px 8px 10px;
+    display: flex; align-items: center; gap: 7px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+    opacity: .65;
+    font-size: 11.5px; font-weight: 500;
+    color: white;
+    user-select: none;
+  }
+  .step-tab:hover { opacity: .85; }
+  .step-tab.active {
+    border-bottom-color: #80CBC4;
+    opacity: 1;
+  }
+  .step-tab.done { opacity: .85; }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.20);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-tab.active .step-num { background: #80CBC4; color: #004D40; }
+  .step-tab.done .step-num   { background: #A5D6A7; color: #1B5E20; }
+
+  /* ── LAYOUT PRINCIPAL ─────────────────────────────────────── */
+  .main-wrap {
+    max-width: 900px;
+    margin: 28px auto;
+    padding: 0 16px 60px;
+  }
+
+  /* ── AVISO LGPD ───────────────────────────────────────────── */
+  .aviso-lgpd {
+    background: var(--azul-claro);
+    border-left: 4px solid var(--azul-sus);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 12.5px;
+    color: #0D47A1;
+    margin-bottom: 22px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .aviso-lgpd .ico { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── CARD / SEÇÃO ─────────────────────────────────────────── */
+  .form-section { display: none; }
+  .form-section.active { display: block; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 22px;
+  }
+  .section-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--verde-amazonia), var(--azul-sus));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: var(--sombra-card);
+  }
+  .section-header-text h2 {
+    font-size: 17px; font-weight: 700; color: var(--verde-escuro);
+  }
+  .section-header-text p {
+    font-size: 12px; color: var(--cinza-texto); margin-top: 2px;
+  }
+
+  .card {
+    background: var(--branco);
+    border-radius: var(--radius);
+    box-shadow: var(--sombra);
+    padding: 24px;
+    margin-bottom: 18px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--verde-amazonia);
+    text-transform: uppercase; letter-spacing: .6px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--teal-light);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── CAMPOS ───────────────────────────────────────────────── */
+  .grid {
+    display: grid;
+    gap: 16px;
+  }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .col-span-2 { grid-column: span 2; }
+  .col-span-3 { grid-column: span 3; }
+  .col-span-4 { grid-column: span 4; }
+
+  .campo { display: flex; flex-direction: column; gap: 5px; }
+  .campo label {
+    font-size: 12px; font-weight: 600;
+    color: var(--cinza-texto);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .campo label .req { color: var(--laranja); font-size: 13px; }
+  .campo label .info-tip {
+    cursor: help;
+    color: var(--azul-sus);
+    font-size: 13px;
+  }
+
+  .campo input,
+  .campo select,
+  .campo textarea {
+    padding: 9px 12px;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: var(--radius-sm);
+    font-size: 13.5px;
+    font-family: 'Inter', sans-serif;
+    color: #263238;
+    background: white;
+    transition: border-color .2s, box-shadow .2s;
+    width: 100%;
+  }
+  .campo input:focus,
+  .campo select:focus,
+  .campo textarea:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.15);
+  }
+  .campo input.invalido,
+  .campo select.invalido { border-color: var(--erro); }
+  .campo input.valido,
+  .campo select.valido   { border-color: var(--ok); }
+  .campo .msg-erro {
+    font-size: 11px; color: var(--erro);
+    display: none;
+  }
+  .campo input.invalido ~ .msg-erro { display: block; }
+
+  .campo textarea { resize: vertical; min-height: 80px; }
+
+  /* Hint text */
+  .hint { font-size: 11px; color: #90A4AE; margin-top: 2px; }
+
+  /* ── RADIO / CHECKBOX ─────────────────────────────────────── */
+  .opcoes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .opcao {
+    display: flex; align-items: center; gap: 7px;
+    cursor: pointer;
+    padding: 7px 12px;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 20px;
+    font-size: 12.5px;
+    transition: all .15s;
+    user-select: none;
+  }
+  .opcao input { display: none; }
+  .opcao:has(input:checked) {
+    border-color: var(--teal);
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+    font-weight: 600;
+  }
+  .opcao:hover { border-color: var(--teal); background: #F0FFFE; }
+
+  /* ── TABELA DINÂMICA (profissionais / serviços / equipamentos) */
+  .tabela-dinamica { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12.5px; }
+  .tabela-dinamica th {
+    background: linear-gradient(90deg, var(--verde-amazonia), var(--azul-sus));
+    color: white;
+    padding: 9px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing: .3px;
+  }
+  .tabela-dinamica th:first-child { border-radius: 6px 0 0 0; }
+  .tabela-dinamica th:last-child  { border-radius: 0 6px 0 0; }
+  .tabela-dinamica td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #ECEFF1;
+    vertical-align: middle;
+  }
+  .tabela-dinamica tr:last-child td { border-bottom: none; }
+  .tabela-dinamica tr:nth-child(even) { background: #F9FAFB; }
+  .tabela-dinamica td input,
+  .tabela-dinamica td select {
+    padding: 6px 8px;
+    border: 1px solid var(--cinza-borda);
+    border-radius: 4px;
+    font-size: 12px;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+  }
+  .tabela-dinamica td input:focus,
+  .tabela-dinamica td select:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px rgba(0,137,123,0.12);
+  }
+
+  .btn-add-linha {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px;
+    padding: 7px 14px;
+    background: var(--verde-claro);
+    color: var(--verde-amazonia);
+    border: 1.5px dashed var(--teal);
+    border-radius: 6px;
+    font-size: 12.5px; font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-add-linha:hover { background: var(--teal-light); }
+
+  .btn-del-linha {
+    background: #FFEBEE;
+    border: none;
+    color: var(--erro);
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background .15s;
+  }
+  .btn-del-linha:hover { background: #FFCDD2; }
+
+  /* ── RODAPÉ DE NAVEGAÇÃO ──────────────────────────────────── */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--cinza-borda);
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 13.5px; font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-secondary {
+    background: white;
+    border: 1.5px solid var(--cinza-borda);
+    color: var(--cinza-texto);
+  }
+  .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--verde-amazonia), var(--azul-sus));
+    color: white;
+    box-shadow: 0 3px 10px rgba(0,105,92,0.35);
+  }
+  .btn-primary:hover { box-shadow: 0 5px 18px rgba(0,105,92,0.45); transform: translateY(-1px); }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #C62828, #AD1457);
+    color: white;
+  }
+
+  .btn-print {
+    background: linear-gradient(135deg, #1565C0, #0D47A1);
+    color: white;
+    box-shadow: 0 3px 10px rgba(21,101,192,0.35);
+  }
+  .btn-print:hover { box-shadow: 0 5px 18px rgba(21,101,192,0.45); transform: translateY(-1px); }
+
+  /* ── CONFIRMAÇÃO / PROTOCOLO ──────────────────────────────── */
+  #tela-confirmacao { display: none; }
+  .protocolo-card {
+    background: linear-gradient(135deg, var(--verde-escuro), var(--azul-sus));
+    color: white;
+    border-radius: 14px;
+    padding: 36px 32px;
+    text-align: center;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 28px rgba(0,77,64,0.30);
+  }
+  .protocolo-ico { font-size: 56px; margin-bottom: 14px; }
+  .protocolo-numero {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 38px; font-weight: 700;
+    letter-spacing: 3px;
+    background: rgba(255,255,255,0.2);
+    display: inline-block;
+    padding: 8px 28px;
+    border-radius: 40px;
+    margin: 12px 0;
+    border: 2px solid rgba(255,255,255,0.35);
+  }
+  .protocolo-card p { opacity: .85; font-size: 13.5px; margin-top: 8px; }
+
+  .instrucoes-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    box-shadow: var(--sombra);
+  }
+  .instrucoes-card h3 {
+    font-size: 14px; font-weight: 700;
+    color: var(--verde-amazonia); margin-bottom: 14px;
+  }
+  .instrucao-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-bottom: 12px;
+    font-size: 13px; color: #37474F;
+  }
+  .instrucao-num {
+    min-width: 26px; height: 26px;
+    background: var(--verde-claro);
+    color: var(--verde-amazonia);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ── SEÇÃO DE IMPRESSÃO ───────────────────────────────────── */
+  #ficha-impressao { display: none; }
+
+  /* ── INDICADOR DE CAMPO OBRIGATÓRIO ─────────────────────────*/
+  .legenda-req {
+    font-size: 11.5px; color: var(--cinza-texto);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .legenda-req span { color: var(--laranja); font-size: 14px; }
+
+  /* ── CHECKBOX SERVIÇOS ────────────────────────────────────── */
+  .servicos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .servico-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .15s;
+    font-size: 12.5px;
+  }
+  .servico-item input[type=checkbox] { accent-color: var(--teal); width: 15px; height: 15px; }
+  .servico-item:has(input:checked) {
+    background: var(--verde-claro);
+    border-color: var(--teal);
+    color: var(--verde-escuro); font-weight: 500;
+  }
+  .servico-item:hover { border-color: var(--teal); }
+
+  /* ── EQUIPAMENTOS ─────────────────────────────────────────── */
+  .equip-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 40px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #ECEFF1;
+  }
+  .equip-row:last-child { border-bottom: none; }
+  .equip-header {
+    font-size: 11.5px; font-weight: 700;
+    color: var(--cinza-texto);
+    text-transform: uppercase; letter-spacing: .4px;
+    padding: 6px 0;
+    border-bottom: 2px solid var(--teal-light);
+    margin-bottom: 4px;
+  }
+
+  /* ── ALERTAS ─────────────────────────────────────────────── */
+  .alerta {
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    margin-bottom: 14px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .alerta-info { background: var(--azul-claro); color: #0D47A1; border-left: 4px solid var(--azul-sus); }
+  .alerta-ok   { background: var(--ok-bg);   color: #1B5E20; border-left: 4px solid var(--ok); }
+  .alerta-aviso { background: #FFF8E1; color: #E65100; border-left: 4px solid #F57C00; }
+
+  /* ── RESPONSIVO ───────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .col-span-2, .col-span-3, .col-span-4 { grid-column: span 1; }
+    .header-top { padding: 12px 16px; }
+    .main-wrap { margin: 14px auto; padding: 0 10px 50px; }
+    .card { padding: 16px; }
+    .btn { padding: 10px 16px; font-size: 13px; }
+  }
+
+  /* ── PRINT ─────────────────────────────────────────────────── */
+  @media print {
+    header, .progress-bar-wrap, .nav-buttons, .aviso-lgpd,
+    .btn-add-linha, .btn-del-linha, #tela-confirmacao .nav-buttons { display: none !important; }
+    body { background: white; }
+    .main-wrap { max-width: 100%; margin: 0; padding: 0; }
+    .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; margin-bottom: 12px; }
+    .form-section { display: block !important; }
+    #tela-confirmacao { display: block !important; }
+    .protocolo-card { background: #004D40 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════ CABEÇALHO -->
+<header>
+  <div class="header-top">
+    <div class="header-escudo">🏥</div>
+    <div class="header-titles">
+      <h1>SISCNES-MANAUS &nbsp;|&nbsp; Sistema Digital de Ficha CNES</h1>
+      <p>Prefeitura Municipal de Manaus &nbsp;·&nbsp; Secretaria Municipal de Saúde — SEMSA &nbsp;·&nbsp; Diretoria de Inteligência de Dados</p>
+    </div>
+    <div class="header-badge">CNES — Consultório Isolado</div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-steps">
+      <div class="step-tab active" onclick="irParaFicha(0)">
+        <div class="step-num">1</div> Ficha 1
+      </div>
+      <div class="step-tab" onclick="irParaFicha(1)">
+        <div class="step-num">2</div> Responsável Técnico
+      </div>
+      <div class="step-tab" onclick="irParaFicha(2)">
+        <div class="step-num">3</div> Profissionais
+      </div>
+      <div class="step-tab" onclick="irParaFicha(3)">
+        <div class="step-num">4</div> Serviços
+      </div>
+      <div class="step-tab" onclick="irParaFicha(4)">
+        <div class="step-num">5</div> Equipamentos
+      </div>
+      <div class="step-tab" onclick="irParaFicha(5)">
+        <div class="step-num">6</div> Confirmação
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════════ CORPO -->
+<div class="main-wrap">
+
+  <div class="aviso-lgpd">
+    <span class="ico">🔒</span>
+    <span>
+      <strong>Lei Geral de Proteção de Dados (LGPD — Lei 13.709/2018):</strong>
+      Os dados informados neste formulário serão utilizados exclusivamente para fins de cadastramento no CNES, conforme previsto na Portaria de Consolidação nº 1/2017 do Ministério da Saúde. O tratamento é realizado com base legal na execução de política pública de saúde.
+    </span>
+  </div>
+
+  <!-- ══════════════════════════════ FICHA 1 — MÓDULO BÁSICO (FCES) -->
+  <div class="form-section active" id="ficha-0">
+    <div class="section-header">
+      <div class="section-icon">🏢</div>
+      <div class="section-header-text">
+        <h2>Ficha 1 — Módulo Básico | Identificação do Estabelecimento</h2>
+        <p>FCES — Ficha Cadastral de Estabelecimento de Saúde. Siga o Instrutivo de Preenchimento da SEMSA Manaus.</p>
+      </div>
+    </div>
+
+    <p class="legenda-req"><span>*</span> Campos obrigatórios conforme instrutivo SEMSA Manaus</p>
+
+    <!-- ── 1. DADOS OPERACIONAIS ───────────────────────────── -->
+    <div class="card">
+      <div class="card-title">1 — DADOS OPERACIONAIS</div>
+      <div class="campo">
+        <label>Tipo de Operação <span class="req">*</span></label>
+        <div class="opcoes">
+          <label class="opcao"><input type="radio" name="dados_operacionais" value="I" checked> INCLUSÃO</label>
+          <label class="opcao"><input type="radio" name="dados_operacionais" value="A"> ALTERAÇÃO</label>
+          <label class="opcao"><input type="radio" name="dados_operacionais" value="E"> EXCLUSÃO</label>
+        </div>
+        <span class="hint">Em caso de ALTERAÇÃO ou EXCLUSÃO, o campo 2.1 (CNES) é obrigatório.</span>
+      </div>
+    </div>
+
+    <!-- ── 2. IDENTIFICAÇÃO PRINCIPAL ─────────────────────── -->
+    <div class="card">
+      <div class="card-title">2 — IDENTIFICAÇÃO PRINCIPAL</div>
+      <div class="grid grid-2">
+
+        <!-- 2.1 CNES -->
+        <div class="campo">
+          <label>2.1 — CNES</label>
+          <input type="text" id="cnes_existente" placeholder="Nº CNES (preencher somente em alteração/exclusão)" maxlength="7">
+          <span class="hint">Deixar em branco para novos cadastros (INCLUSÃO).</span>
+        </div>
+
+        <!-- 2.5 Situação -->
+        <div class="campo">
+          <label>2.5 — Situação <span class="req">*</span></label>
+          <div class="opcoes" style="margin-top:4px">
+            <label class="opcao"><input type="radio" name="situacao_estab" value="I" checked> Individual</label>
+            <label class="opcao"><input type="radio" name="situacao_estab" value="M"> Mantido</label>
+          </div>
+          <span class="hint">Individual: sem dependência. Mantido: vinculado a estabelecimento principal (relação matriz/filial).</span>
+        </div>
+
+        <!-- 2.2 Tipo de Pessoa -->
+        <div class="campo">
+          <label>2.2 — Pessoa <span class="req">*</span></label>
+          <div class="opcoes" style="margin-top:4px">
+            <label class="opcao"><input type="radio" name="tipo_pessoa" value="juridica" checked onchange="toggleTipoPessoa(this)"> Jurídica (CNPJ)</label>
+            <label class="opcao"><input type="radio" name="tipo_pessoa" value="fisica" onchange="toggleTipoPessoa(this)"> Física (CPF)</label>
+          </div>
+        </div>
+
+        <!-- 2.3 CNPJ/CPF -->
+        <div class="campo" id="campo-cnpj-wrap">
+          <label>2.3 — CNPJ do Estabelecimento <span class="req">*</span></label>
+          <input type="text" id="cnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="mascaraCNPJ(this)" required>
+          <span class="msg-erro">CNPJ inválido.</span>
+        </div>
+        <div class="campo" id="campo-cpf-wrap" style="display:none">
+          <label>2.3 — CPF do Estabelecimento <span class="req">*</span></label>
+          <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+          <span class="msg-erro">CPF inválido.</span>
+        </div>
+
+        <!-- 2.4 CNPJ Mantenedora -->
+        <div class="campo col-span-2">
+          <label>2.4 — CNPJ da Mantenedora</label>
+          <input type="text" id="cnpj_mantenedora" placeholder="00.000.000/0000-00 — preencher apenas quando situação = Mantido" maxlength="18" oninput="mascaraCNPJ(this)">
+          <span class="hint">Preencher somente quando o estabelecimento for dependente de outro (situação: Mantido).</span>
+        </div>
+
+        <!-- 2.6 Tipo de Estabelecimento -->
+        <div class="campo col-span-2">
+          <label>2.6 — Tipo de Estabelecimento / Unidade <span class="req">*</span></label>
+          <select id="tipo_estabelecimento" required onchange="toggleIndigena(this)">
+            <option value="">Selecione o tipo de estabelecimento...</option>
+            <option value="02">02 — Centro de Saúde / Unidade Básica de Saúde (UBS)</option>
+            <option value="04">04 — Policlínica</option>
+            <option value="15">15 — Unidade Mista</option>
+            <option value="22" selected>22 — Consultório Isolado</option>
+            <option value="32">32 — Unidade Móvel Fluvial</option>
+            <option value="36">36 — Clínica Especializada / Ambulatório Especializado</option>
+            <option value="39">39 — Unidade de Serviço de Apoio de Diagnose e Terapia</option>
+            <option value="40">40 — Unidade Móvel Terrestre</option>
+            <option value="42">42 — Unidade Móvel de Nível Pré-Hospitalar (Urgência/Emergência)</option>
+            <option value="43">43 — Farmácia</option>
+            <option value="60">60 — Cooperativa</option>
+            <option value="61">61 — Centro de Parto Normal Isolado</option>
+            <option value="62">62 — Hospital/Dia Isolado</option>
+            <option value="69">69 — Centro de Atenção Hemoterapia e/ou Hematológica</option>
+            <option value="70">70 — Centro de Atenção Psicossocial (CAPS)</option>
+            <option value="71">71 — Centro de Apoio à Saúde da Família (NASF/eMulti)</option>
+            <option value="72">72 — Unidade de Atenção à Saúde Indígena</option>
+          </select>
+          <span class="hint">Consultório Isolado (22) = sala isolada destinada à assistência médica, odontológica ou de outros profissionais de nível superior. Consulte o instrutivo para outros tipos.</span>
+        </div>
+
+        <!-- 2.6.1 Subtipo -->
+        <div class="campo col-span-2">
+          <label>2.6.1 — Subtipo de Estabelecimento</label>
+          <input type="text" id="subtipo_estabelecimento" placeholder="Código e descrição do subtipo (se aplicável)">
+        </div>
+
+        <!-- 2.7 Razão Social -->
+        <div class="campo col-span-2">
+          <label>2.7 — Razão Social <span class="req">*</span></label>
+          <input type="text" id="razao_social" placeholder="Nome completo conforme Alvará de Licença da Prefeitura" required>
+        </div>
+
+        <!-- 2.8 Nome Fantasia -->
+        <div class="campo col-span-2">
+          <label>2.8 — Nome Fantasia</label>
+          <input type="text" id="nome_fantasia" placeholder="Se houver, conforme Alvará de Licença. Caso contrário, ficará igual à Razão Social.">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── ENDEREÇO (2.9 a 2.16) ──────────────────────────── -->
+    <div class="card">
+      <div class="card-title">📍 Endereço — campos 2.9 a 2.16</div>
+      <div class="grid grid-4">
+
+        <div class="campo col-span-3">
+          <label>2.9 — Logradouro <span class="req">*</span></label>
+          <input type="text" id="logradouro" placeholder="Nome completo da rua, avenida, travessa, rodovia (sem abreviações)" required>
+        </div>
+        <div class="campo">
+          <label>2.10 — Número <span class="req">*</span></label>
+          <input type="text" id="numero_end" placeholder="Nº ou S/N" required>
+        </div>
+        <div class="campo col-span-2">
+          <label>2.11 — Complemento</label>
+          <input type="text" id="complemento" placeholder="Sala, Conjunto, Bloco, Andar...">
+        </div>
+        <div class="campo col-span-2">
+          <label>2.12 — Bairro <span class="req">*</span></label>
+          <input type="text" id="bairro" placeholder="Nome completo do bairro (sem abreviações)" required>
+        </div>
+        <div class="campo">
+          <label>2.13 — Código IBGE <span class="req">*</span></label>
+          <input type="text" id="cod_ibge" value="1302603" maxlength="7" required>
+          <span class="hint">Manaus: 1302603</span>
+        </div>
+        <div class="campo col-span-2">
+          <label>2.14 — Nome do Município <span class="req">*</span></label>
+          <input type="text" id="municipio" value="Manaus" required>
+        </div>
+        <div class="campo">
+          <label>2.15 — UF <span class="req">*</span></label>
+          <select id="uf" required>
+            <option value="AM" selected>AM</option>
+            <option value="AC">AC</option><option value="AL">AL</option>
+            <option value="AP">AP</option><option value="BA">BA</option>
+            <option value="CE">CE</option><option value="DF">DF</option>
+            <option value="ES">ES</option><option value="GO">GO</option>
+            <option value="MA">MA</option><option value="MG">MG</option>
+            <option value="MS">MS</option><option value="MT">MT</option>
+            <option value="PA">PA</option><option value="PB">PB</option>
+            <option value="PE">PE</option><option value="PI">PI</option>
+            <option value="PR">PR</option><option value="RJ">RJ</option>
+            <option value="RN">RN</option><option value="RO">RO</option>
+            <option value="RR">RR</option><option value="RS">RS</option>
+            <option value="SC">SC</option><option value="SE">SE</option>
+            <option value="SP">SP</option><option value="TO">TO</option>
+          </select>
+        </div>
+        <div class="campo col-span-2">
+          <label>2.16 — CEP <span class="req">*</span></label>
+          <input type="text" id="cep" placeholder="69000-000" maxlength="9" oninput="mascaraCEP(this)" onblur="buscarCEP()" required>
+          <span class="hint">CEPs de Manaus iniciam com 69. Digite para preenchimento automático.</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── CONTATO E REGIONAL (2.17 a 2.25) ──────────────── -->
+    <div class="card">
+      <div class="card-title">📞 Contato e Dados Regionais — campos 2.17 a 2.25</div>
+      <div class="grid grid-4">
+
+        <div class="campo">
+          <label>2.17 — Região de Saúde</label>
+          <input type="text" id="r_saude" placeholder="Código da região de saúde">
+        </div>
+        <div class="campo">
+          <label>2.18 — Microrregião</label>
+          <input type="text" id="microrregiao" placeholder="Código da microrregião">
+        </div>
+        <div class="campo">
+          <label>2.19 — Distrito Sanitário</label>
+          <select id="distrito_sanitario">
+            <option value="">Selecione...</option>
+            <option value="DS-LESTE">Leste</option>
+            <option value="DS-NORTE">Norte</option>
+            <option value="DS-OESTE">Oeste</option>
+            <option value="DS-SUL">Sul</option>
+            <option value="DS-CENTRO-SUL">Centro-Sul</option>
+            <option value="DS-CENTRO-OESTE">Centro-Oeste</option>
+          </select>
+          <span class="hint">Distrito Sanitário de Manaus onde o estab. está localizado.</span>
+        </div>
+        <div class="campo">
+          <label>2.20 — Módulo Assistencial</label>
+          <input type="text" id="mod_assist" placeholder="Código do módulo assistencial">
+        </div>
+        <div class="campo col-span-2">
+          <label>2.21 — DDD / Telefone <span class="req">*</span></label>
+          <input type="text" id="telefone1" placeholder="(92) 99999-9999" maxlength="15" oninput="mascaraTel(this)" required>
+        </div>
+        <div class="campo col-span-2">
+          <label>2.22 — DDD / Fax</label>
+          <input type="text" id="fax" placeholder="(92) 3333-3333" maxlength="14" oninput="mascaraTel(this)">
+        </div>
+        <div class="campo col-span-4">
+          <label>2.23 — E-mail (institucional preferencialmente) <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="contato@estabelecimento.com.br" required>
+        </div>
+        <div class="campo col-span-2">
+          <label>2.24 — Diretor Clínico ou Gerente / Administrador <span class="req">*</span></label>
+          <input type="text" id="diretor_clinico" placeholder="Nome completo do responsável pelo estabelecimento" required>
+          <span class="hint">Hospitais: Diretor Clínico. Demais: Gerente ou Administrador. O profissional deve constar também na Ficha de Profissional com CBO de diretor/gerente.</span>
+        </div>
+        <div class="campo">
+          <label>2.25 — Registro no Conselho de Classe</label>
+          <input type="text" id="registro_conselho" placeholder="Ex: CRM/AM 12345">
+        </div>
+        <div class="campo">
+          <label>2.25 — URL / Site</label>
+          <input type="url" id="site" placeholder="https://www.site.com.br">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 3. IDENTIFICAÇÃO COMPLEMENTAR ─────────────────── -->
+    <div class="card">
+      <div class="card-title">3 — IDENTIFICAÇÃO COMPLEMENTAR</div>
+
+      <!-- 3.1 Vigilância Sanitária -->
+      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
+        3.1 — Vigilância Sanitária
+      </p>
+      <div class="alerta alerta-info" style="margin-bottom:14px">
+        <span>ℹ️</span>
+        <span>Conforme instrutivo da SEMSA Manaus: o Órgão Expedidor para estabelecimentos no município de Manaus é <strong>sempre SMS</strong> (Secretaria Municipal de Saúde). O número do alvará deve estar vigente (Ex: 1234/2025).</span>
+      </div>
+      <div class="grid grid-3" style="margin-bottom:28px">
+        <div class="campo">
+          <label>3.1.1 — Nº do Alvará <span class="req">*</span></label>
+          <input type="text" id="alvara_num" placeholder="Ex: 1234/2025" required>
+        </div>
+        <div class="campo">
+          <label>3.1.2 — Data de Expedição <span class="req">*</span></label>
+          <input type="date" id="alvara_data" required>
+        </div>
+        <div class="campo">
+          <label>3.1.3 — Órgão Expedidor <span class="req">*</span></label>
+          <div class="opcoes" style="margin-top:4px">
+            <label class="opcao"><input type="radio" name="orgao_expedidor" value="SES"> SES</label>
+            <label class="opcao"><input type="radio" name="orgao_expedidor" value="SMS" checked> SMS ✓</label>
+          </div>
+          <span class="hint">Para Manaus: sempre marcar SMS.</span>
+        </div>
+      </div>
+
+      <!-- 3.2 Dados Bancários -->
+      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
+        3.2 — Dados Bancários
+      </p>
+      <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px;">
+        Preencher somente quando o estabelecimento privado for contratado pelo SUS.
+      </p>
+      <div class="grid grid-3" style="margin-bottom:28px">
+        <div class="campo">
+          <label>3.2.1 — Banco (Código / Nome)</label>
+          <input type="text" id="banco_codigo" placeholder="Cód. banco — Nome do banco">
+        </div>
+        <div class="campo">
+          <label>3.2.2 — Agência (Código / Nome)</label>
+          <input type="text" id="agencia_codigo" placeholder="Cód. agência — Nome da agência">
+        </div>
+        <div class="campo">
+          <label>3.2.3 — Conta Corrente</label>
+          <input type="text" id="conta_corrente" placeholder="Número da conta corrente">
+        </div>
+      </div>
+
+      <!-- 3.3 Representante Legal -->
+      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
+        3.3 — Representante Legal
+      </p>
+      <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px;">
+        Preencher somente para instituições filantrópicas sem fins lucrativos.
+      </p>
+      <div class="grid grid-2" style="margin-bottom:28px">
+        <div class="campo">
+          <label>3.3.1 — CPF do Representante Legal</label>
+          <input type="text" id="rep_cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+        </div>
+        <div class="campo">
+          <label>3.3.2 — Nome do Representante Legal</label>
+          <input type="text" id="rep_nome" placeholder="Nome completo, sem abreviações">
+        </div>
+        <div class="campo">
+          <label>3.3.3 — Cargo</label>
+          <input type="text" id="rep_cargo" placeholder="Ex: Presidente, Diretor Executivo, Superintendente...">
+        </div>
+        <div class="campo">
+          <label>3.3.4 — E-mail (institucional preferencialmente)</label>
+          <input type="email" id="rep_email" placeholder="email@instituicao.org.br">
+        </div>
+      </div>
+
+      <!-- 3.4 Mapeamento Indígena (visível somente para tipo 72) -->
+      <div id="secao-indigena" style="display:none">
+        <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
+          3.4 — Mapeamento Indígena
+        </p>
+        <div class="alerta alerta-aviso" style="margin-bottom:12px">
+          <span>⚠️</span>
+          <span>Preencher <strong>somente</strong> para estabelecimentos do <strong>tipo 72 — Unidade de Atenção à Saúde Indígena</strong>.</span>
+        </div>
+        <div class="grid grid-3">
+          <div class="campo">
+            <label>3.4.1 — Aldeia</label>
+            <input type="text" id="aldeia" placeholder="Nome da aldeia indígena">
+          </div>
+          <div class="campo">
+            <label>3.4.2 — Pólo-Base</label>
+            <input type="text" id="polo_base" placeholder="Nome do pólo-base">
+          </div>
+          <div class="campo">
+            <label>3.4.3 — DSEI</label>
+            <input type="text" id="dsei" placeholder="Distrito Sanitário Especial Indígena">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="nav-buttons">
+      <span></span>
+      <button class="btn btn-primary" onclick="proximaFicha(0)">Próximo &nbsp;→</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ FICHA 2 — RESPONSÁVEL TÉCNICO -->
+  <div class="form-section" id="ficha-1">
+    <div class="section-header">
+      <div class="section-icon">👨‍⚕️</div>
+      <div class="section-header-text">
+        <h2>Ficha 2 — Responsável Técnico</h2>
+        <p>Profissional responsável técnico pelo estabelecimento, conforme registro no conselho de classe.</p>
+      </div>
+    </div>
+
+    <p class="legenda-req"><span>*</span> Campos obrigatórios</p>
+
+    <div class="alerta alerta-info">
+      <span>ℹ️</span>
+      <span>O Responsável Técnico (RT) deve possuir registro ativo no respectivo Conselho de Classe e habilitação compatível com os serviços ofertados pelo estabelecimento.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">👤 Dados do Responsável Técnico</div>
+      <div class="grid grid-2">
+        <div class="campo col-span-2">
+          <label>Nome Completo <span class="req">*</span></label>
+          <input type="text" id="rt_nome" placeholder="Nome conforme registro no conselho" required>
+        </div>
+        <div class="campo">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" id="rt_cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)" required>
+        </div>
+        <div class="campo">
+          <label>CNS — Cartão Nacional de Saúde</label>
+          <input type="text" id="rt_cns" placeholder="000000000000000" maxlength="15">
+          <span class="hint">15 dígitos, sem pontuação.</span>
+        </div>
+        <div class="campo">
+          <label>Conselho de Classe <span class="req">*</span></label>
+          <select id="rt_conselho" required>
+            <option value="">Selecione...</option>
+            <option value="CRM">CRM — Conselho Regional de Medicina</option>
+            <option value="CRO">CRO — Conselho Regional de Odontologia</option>
+            <option value="CFP">CFP — Conselho Federal de Psicologia</option>
+            <option value="CREFITO">CREFITO — Fisioterapia e Terapia Ocupacional</option>
+            <option value="CRN">CRN — Conselho Regional de Nutrição</option>
+            <option value="COREN">COREN — Conselho Regional de Enfermagem</option>
+            <option value="CFF">CFF — Conselho Federal de Farmácia</option>
+            <option value="CFESS">CFESS — Serviço Social</option>
+            <option value="CRFono">CRFa — Fonoaudiologia</option>
+            <option value="OUTRO">Outro</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Número do Registro no Conselho <span class="req">*</span></label>
+          <input type="text" id="rt_numero_conselho" placeholder="Ex: CRM/AM 00000" required>
+        </div>
+        <div class="campo">
+          <label>UF do Registro <span class="req">*</span></label>
+          <select id="rt_uf_conselho" required>
+            <option value="AM" selected>AM</option>
+            <option value="AC">AC</option><option value="AL">AL</option>
+            <option value="AP">AP</option><option value="BA">BA</option>
+            <option value="CE">CE</option><option value="DF">DF</option>
+            <option value="ES">ES</option><option value="GO">GO</option>
+            <option value="MA">MA</option><option value="MG">MG</option>
+            <option value="MS">MS</option><option value="MT">MT</option>
+            <option value="PA">PA</option><option value="PB">PB</option>
+            <option value="PE">PE</option><option value="PI">PI</option>
+            <option value="PR">PR</option><option value="RJ">RJ</option>
+            <option value="RN">RN</option><option value="RO">RO</option>
+            <option value="RR">RR</option><option value="RS">RS</option>
+            <option value="SC">SC</option><option value="SE">SE</option>
+            <option value="SP">SP</option><option value="TO">TO</option>
+          </select>
+        </div>
+        <div class="campo col-span-2">
+          <label>Especialidade / Área de Atuação <span class="req">*</span></label>
+          <input type="text" id="rt_especialidade" placeholder="Ex: Clínico Geral, Cardiologista, Cirurgião-Dentista..." required>
+        </div>
+        <div class="campo">
+          <label>Telefone de Contato do RT</label>
+          <input type="text" id="rt_telefone" placeholder="(92) 00000-0000" maxlength="15" oninput="mascaraTel(this)">
+        </div>
+        <div class="campo">
+          <label>E-mail do RT</label>
+          <input type="email" id="rt_email" placeholder="rt@email.com">
+        </div>
+        <div class="campo col-span-2">
+          <label>Vínculo do RT com o Estabelecimento <span class="req">*</span></label>
+          <div class="opcoes">
+            <label class="opcao"><input type="radio" name="rt_vinculo" value="proprietario" checked> Proprietário / Titular</label>
+            <label class="opcao"><input type="radio" name="rt_vinculo" value="empregado"> Empregado CLT</label>
+            <label class="opcao"><input type="radio" name="rt_vinculo" value="autonomo"> Autônomo / Prestador</label>
+            <label class="opcao"><input type="radio" name="rt_vinculo" value="servidor"> Servidor Público</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="fichaAnterior(1)">← Anterior</button>
+      <button class="btn btn-primary" onclick="proximaFicha(1)">Próximo &nbsp;→</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ FICHA 3 — PROFISSIONAIS -->
+  <div class="form-section" id="ficha-2">
+    <div class="section-header">
+      <div class="section-icon">👥</div>
+      <div class="section-header-text">
+        <h2>Ficha 3 — Profissionais Vinculados</h2>
+        <p>Todos os profissionais de saúde que atuam no estabelecimento, incluindo o RT.</p>
+      </div>
+    </div>
+
+    <div class="alerta alerta-aviso">
+      <span>⚠️</span>
+      <span>Inclua <strong>todos</strong> os profissionais que atuam no estabelecimento, mesmo que em regime parcial. Cada profissional precisa ter registro ativo no respectivo conselho de classe.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">👨‍⚕️ Quadro de Profissionais</div>
+      <div style="overflow-x:auto">
+        <table class="tabela-dinamica" id="tabela-profissionais">
+          <thead>
+            <tr>
+              <th>Nome Completo</th>
+              <th>CPF</th>
+              <th>Conselho</th>
+              <th>Nº Registro</th>
+              <th>CBO (Ocupação)</th>
+              <th>Vínculo</th>
+              <th>CH Ambulatorial</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-profissionais">
+            <tr>
+              <td><input type="text" placeholder="Nome completo"></td>
+              <td><input type="text" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)"></td>
+              <td>
+                <select>
+                  <option value="">--</option>
+                  <option>CRM</option><option>CRO</option>
+                  <option>CFP</option><option>CREFITO</option>
+                  <option>CRN</option><option>COREN</option>
+                  <option>CFF</option><option>CRFa</option>
+                  <option>OUTRO</option>
+                </select>
+              </td>
+              <td><input type="text" placeholder="Nº Registro"></td>
+              <td><input type="text" placeholder="225125 — Médico Clínico"></td>
+              <td>
+                <select>
+                  <option value="">--</option>
+                  <option>Proprietário</option>
+                  <option>CLT</option>
+                  <option>Autônomo</option>
+                  <option>Servidor</option>
+                  <option>Voluntário</option>
+                </select>
+              </td>
+              <td><input type="number" placeholder="20" min="1" max="60" style="width:70px"></td>
+              <td><button class="btn-del-linha" onclick="removerLinha(this, 'tbody-profissionais')">🗑</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="btn-add-linha" onclick="adicionarProfissional()">+ Adicionar Profissional</button>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="fichaAnterior(2)">← Anterior</button>
+      <button class="btn btn-primary" onclick="proximaFicha(2)">Próximo &nbsp;→</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ FICHA 4 — SERVIÇOS -->
+  <div class="form-section" id="ficha-3">
+    <div class="section-header">
+      <div class="section-icon">🩺</div>
+      <div class="section-header-text">
+        <h2>Ficha 4 — Serviços e Especialidades</h2>
+        <p>Selecione todos os serviços prestados pelo estabelecimento, conforme tabela do CNES/SIGTAP.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏥 Serviços Médicos e de Saúde</div>
+      <div class="servicos-grid" id="servicos-medicos">
+        <!-- gerado por JS -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🦷 Serviços Odontológicos</div>
+      <div class="servicos-grid" id="servicos-odonto">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧠 Serviços de Saúde Mental e outros</div>
+      <div class="servicos-grid" id="servicos-outros">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📝 Serviços Adicionais / Observações</div>
+      <div class="campo">
+        <label>Descreva serviços não listados acima</label>
+        <textarea id="servicos_outros_desc" placeholder="Descreva qualquer serviço especializado não contemplado nas opções acima..."></textarea>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="fichaAnterior(3)">← Anterior</button>
+      <button class="btn btn-primary" onclick="proximaFicha(3)">Próximo &nbsp;→</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ FICHA 5 — EQUIPAMENTOS -->
+  <div class="form-section" id="ficha-4">
+    <div class="section-header">
+      <div class="section-icon">🔬</div>
+      <div class="section-header-text">
+        <h2>Ficha 5 — Equipamentos</h2>
+        <p>Informe os equipamentos disponíveis e sua situação de uso. Deixe quantidade 0 para não disponível.</p>
+      </div>
+    </div>
+
+    <div class="alerta alerta-info">
+      <span>ℹ️</span>
+      <span>Preencha a quantidade e selecione a classificação: <strong>Próprio</strong> (pertence ao estabelecimento), <strong>Locado</strong> (alugado), <strong>SUS</strong> (cedido pelo SUS) ou <strong>N/A</strong> (não aplicável).</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏥 Equipamentos de Diagnose e Terapia</div>
+      <div id="equipamentos-wrap">
+        <!-- gerado por JS -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🛏️ Instalações Físicas</div>
+      <div class="grid grid-3">
+        <div class="campo">
+          <label>Salas de Atendimento / Consultórios</label>
+          <input type="number" id="salas_atendimento" min="0" max="99" value="1">
+        </div>
+        <div class="campo">
+          <label>Sala de Espera</label>
+          <div class="opcoes" style="margin-top:4px">
+            <label class="opcao"><input type="radio" name="sala_espera" value="S" checked> Sim</label>
+            <label class="opcao"><input type="radio" name="sala_espera" value="N"> Não</label>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Banheiro Adaptado (PCD)</label>
+          <div class="opcoes" style="margin-top:4px">
+            <label class="opcao"><input type="radio" name="banheiro_pcd" value="S"> Sim</label>
+            <label class="opcao"><input type="radio" name="banheiro_pcd" value="N" checked> Não</label>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Acessibilidade para PCD</label>
+          <div class="opcoes" style="margin-top:4px">
+            <label class="opcao"><input type="radio" name="acessibilidade" value="S"> Sim</label>
+            <label class="opcao"><input type="radio" name="acessibilidade" value="N" checked> Não</label>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Ar-Condicionado</label>
+          <div class="opcoes" style="margin-top:4px">
+            <label class="opcao"><input type="radio" name="ar_cond" value="S"> Sim</label>
+            <label class="opcao"><input type="radio" name="ar_cond" value="N" checked> Não</label>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Farmácia / Dispensação</label>
+          <div class="opcoes" style="margin-top:4px">
+            <label class="opcao"><input type="radio" name="farmacia" value="S"> Sim</label>
+            <label class="opcao"><input type="radio" name="farmacia" value="N" checked> Não</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="fichaAnterior(4)">← Anterior</button>
+      <button class="btn btn-primary" onclick="proximaFicha(4)">Próximo &nbsp;→</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ FICHA 6 — REVISÃO / ENVIO -->
+  <div class="form-section" id="ficha-5">
+    <div class="section-header">
+      <div class="section-icon">✅</div>
+      <div class="section-header-text">
+        <h2>Ficha 6 — Revisão e Envio</h2>
+        <p>Revise os dados antes de gerar o protocolo e imprimir a ficha.</p>
+      </div>
+    </div>
+
+    <div class="alerta alerta-ok">
+      <span>✅</span>
+      <span>Todas as fichas foram preenchidas! Revise o resumo abaixo e clique em <strong>"Gerar Protocolo e Imprimir"</strong> para finalizar.</span>
+    </div>
+
+    <div class="card" id="card-resumo">
+      <div class="card-title">📋 Resumo do Cadastro</div>
+      <div id="resumo-conteudo">
+        <!-- preenchido por JS -->
+      </div>
+    </div>
+
+    <!-- Declaração -->
+    <div class="card">
+      <div class="card-title">📜 Declaração e Termo de Responsabilidade</div>
+      <div style="background:#F9FAFB; border-radius:8px; padding:16px; font-size:12.5px; color:#455A64; line-height:1.7; margin-bottom:16px; border:1px solid #ECEFF1;">
+        Declaro, sob as penas da lei, que as informações prestadas neste formulário são verdadeiras e completas, e que o estabelecimento acima identificado atende às exigências legais e normativas aplicáveis ao seu funcionamento, incluindo a Portaria de Consolidação nº 1/2017 do Ministério da Saúde, demais normas do CNES e legislação sanitária vigente. Estou ciente de que a omissão ou falsidade de informações sujeita o responsável às sanções previstas em lei.
+      </div>
+      <label class="opcao" style="border-radius:8px; padding:12px 16px; font-size:13px;">
+        <input type="checkbox" id="aceite_declaracao" style="width:16px;height:16px;accent-color:var(--teal)">
+        &nbsp; <strong>Declaro que li e concordo com os termos acima, e que as informações são verídicas.</strong>
+        <span class="req" style="color:var(--laranja)"> *</span>
+      </label>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="fichaAnterior(5)">← Anterior</button>
+      <button class="btn btn-primary" id="btn-gerar" onclick="gerarProtocolo()" style="font-size:14px; padding:13px 28px;">
+        🖨️ &nbsp; Gerar Protocolo e Imprimir
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ TELA DE CONFIRMAÇÃO -->
+  <div id="tela-confirmacao">
+    <div class="protocolo-card">
+      <div class="protocolo-ico">🎉</div>
+      <h2 style="font-size:20px; font-weight:700;">Solicitação Registrada com Sucesso!</h2>
+      <div class="protocolo-numero" id="numero-protocolo">SMSA-2025-000000</div>
+      <p>Anote ou imprima este número de protocolo. Ele é necessário para acompanhar o status do seu cadastro.</p>
+      <p style="margin-top:8px; font-size:12px; opacity:.7;">
+        Data/Hora: <span id="data-protocolo"></span>
+      </p>
+    </div>
+
+    <div class="instrucoes-card">
+      <h3>📌 Próximos Passos</h3>
+      <div class="instrucao-item">
+        <div class="instrucao-num">1</div>
+        <div><strong>Imprima a ficha</strong> gerada clicando no botão abaixo. Ou salve como PDF pelo seu navegador (Ctrl+P → Salvar como PDF).</div>
+      </div>
+      <div class="instrucao-item">
+        <div class="instrucao-num">2</div>
+        <div><strong>Assine a ficha</strong> impressa no campo destinado à assinatura do Responsável Técnico.</div>
+      </div>
+      <div class="instrucao-item">
+        <div class="instrucao-num">3</div>
+        <div><strong>Reúna os documentos</strong> obrigatórios: Alvará Sanitário, CNPJ/CPF, RG e registro no conselho de classe do RT, além do comprovante de endereço do estabelecimento.</div>
+      </div>
+      <div class="instrucao-item">
+        <div class="instrucao-num">4</div>
+        <div><strong>Entregue</strong> presencialmente ou envie por e-mail para: <a href="mailto:cnes@semsa.manaus.am.gov.br" style="color:var(--azul-sus)">cnes@semsa.manaus.am.gov.br</a></div>
+      </div>
+      <div class="instrucao-item">
+        <div class="instrucao-num">5</div>
+        <div><strong>Prazo de análise:</strong> até 15 dias úteis após o recebimento da documentação completa.</div>
+      </div>
+    </div>
+
+    <div class="alerta alerta-aviso">
+      <span>📍</span>
+      <span><strong>Atendimento presencial — SEMSA Manaus:</strong><br>
+      Setor CNES &nbsp;|&nbsp; Rua Recife, 3161, Planalto — Manaus/AM<br>
+      Segunda a Sexta, das 08h às 14h &nbsp;|&nbsp; (92) 3215-XXXX
+      </span>
+    </div>
+
+    <div class="nav-buttons" style="border-top:none; margin-top:8px;">
+      <button class="btn btn-secondary" onclick="novoPreenchimento()">🔄 &nbsp; Novo Preenchimento</button>
+      <button class="btn btn-print" onclick="imprimirFicha()">🖨️ &nbsp; Imprimir Ficha Completa</button>
+    </div>
+  </div>
+
+</div><!-- /main-wrap -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// NAVEGAÇÃO ENTRE FICHAS
+// ═══════════════════════════════════════════════════════════════
+let fichaAtual = 0;
+const totalFichas = 6;
+
+function irParaFicha(idx) {
+  document.querySelectorAll('.form-section').forEach((s,i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.step-tab').forEach((t,i) => {
+    t.classList.remove('active','done');
+    if (i === idx) t.classList.add('active');
+    else if (i < idx) t.classList.add('done');
+  });
+  fichaAtual = idx;
+  if (idx === 5) gerarResumo();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function proximaFicha(idx) { irParaFicha(idx + 1); }
+function fichaAnterior(idx) { irParaFicha(idx - 1); }
+
+// ═══════════════════════════════════════════════════════════════
+// TIPO DE PESSOA
+// ═══════════════════════════════════════════════════════════════
+function toggleTipoPessoa(el) {
+  document.getElementById('campo-cnpj-wrap').style.display = el.value === 'juridica' ? '' : 'none';
+  document.getElementById('campo-cpf-wrap').style.display  = el.value === 'fisica'   ? '' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAPEAMENTO INDÍGENA — exibe seção 3.4 somente para tipo 72
+// ═══════════════════════════════════════════════════════════════
+function toggleIndigena(el) {
+  const secao = document.getElementById('secao-indigena');
+  if (secao) secao.style.display = el.value === '72' ? '' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MÁSCARAS
+// ═══════════════════════════════════════════════════════════════
+function mascaraCNPJ(el) {
+  let v = el.value.replace(/\D/g,'');
+  v = v.replace(/^(\d{2})(\d)/,'$1.$2');
+  v = v.replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3');
+  v = v.replace(/\.(\d{3})(\d)/,'.$1/$2');
+  v = v.replace(/(\d{4})(\d)/,'$1-$2');
+  el.value = v.substring(0,18);
+}
+function mascaraCPF(el) {
+  let v = el.value.replace(/\D/g,'');
+  v = v.replace(/(\d{3})(\d)/,'$1.$2');
+  v = v.replace(/(\d{3})(\d)/,'$1.$2');
+  v = v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  el.value = v.substring(0,14);
+}
+function mascaraCEP(el) {
+  let v = el.value.replace(/\D/g,'');
+  v = v.replace(/(\d{5})(\d)/,'$1-$2');
+  el.value = v.substring(0,9);
+}
+function mascaraTel(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length <= 10) {
+    v = v.replace(/(\d{2})(\d)/,'($1) $2');
+    v = v.replace(/(\d{4})(\d)/,'$1-$2');
+  } else {
+    v = v.replace(/(\d{2})(\d)/,'($1) $2');
+    v = v.replace(/(\d{5})(\d)/,'$1-$2');
+  }
+  el.value = v.substring(0,15);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BUSCA CEP (simulada — sem API externa para funcionar offline)
+// ═══════════════════════════════════════════════════════════════
+function buscarCEP() {
+  const cep = document.getElementById('cep').value.replace(/\D/g,'');
+  // Pré-preenche Manaus como padrão (CEPs de Manaus começam com 69)
+  if (cep.length === 8 && cep.startsWith('69')) {
+    if (!document.getElementById('municipio').value) {
+      document.getElementById('municipio').value = 'Manaus';
+    }
+    if (!document.getElementById('uf').value || document.getElementById('uf').value === 'AM') {
+      document.getElementById('uf').value = 'AM';
+    }
+    document.getElementById('cod_ibge').value = '1302603';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABELA DINÂMICA — PROFISSIONAIS
+// ═══════════════════════════════════════════════════════════════
+function adicionarProfissional() {
+  const tbody = document.getElementById('tbody-profissionais');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" placeholder="Nome completo"></td>
+    <td><input type="text" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)"></td>
+    <td><select>
+      <option value="">--</option>
+      <option>CRM</option><option>CRO</option>
+      <option>CFP</option><option>CREFITO</option>
+      <option>CRN</option><option>COREN</option>
+      <option>CFF</option><option>CRFa</option><option>OUTRO</option>
+    </select></td>
+    <td><input type="text" placeholder="Nº Registro"></td>
+    <td><input type="text" placeholder="CBO (código ou nome)"></td>
+    <td><select>
+      <option value="">--</option>
+      <option>Proprietário</option><option>CLT</option>
+      <option>Autônomo</option><option>Servidor</option><option>Voluntário</option>
+    </select></td>
+    <td><input type="number" placeholder="20" min="1" max="60" style="width:70px"></td>
+    <td><button class="btn-del-linha" onclick="removerLinha(this,'tbody-profissionais')">🗑</button></td>`;
+  tbody.appendChild(tr);
+}
+function removerLinha(btn, tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  if (tbody.rows.length > 1) btn.closest('tr').remove();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SERVIÇOS — GERAÇÃO DINÂMICA
+// ═══════════════════════════════════════════════════════════════
+const servicosMedicos = [
+  'Clínica Geral / Medicina de Família','Cardiologia','Neurologia','Dermatologia',
+  'Endocrinologia','Ginecologia e Obstetrícia','Pediatria','Ortopedia e Traumatologia',
+  'Oftalmologia','Otorrinolaringologia','Urologia','Gastroenterologia',
+  'Pneumologia','Reumatologia','Infectologia','Nefrologia','Hematologia',
+  'Geriatria','Medicina do Trabalho','Cirurgia Geral','Cirurgia Plástica',
+  'Anestesiologia','Acupuntura','Medicina Integrativa','Homeopatia','Medicina Esportiva',
+];
+const servicosOdonto = [
+  'Clínica Geral Odontológica','Ortodontia','Periodontia','Endodontia',
+  'Cirurgia Buco-Maxilo-Facial','Odontopediatria','Prótese Dentária',
+  'Implantodontia','Estética Dental','Odontologia do Trabalho','Radiologia Odontológica',
+];
+const servicosOutros = [
+  'Psicologia Clínica','Psiquiatria','Fonoaudiologia','Fisioterapia',
+  'Terapia Ocupacional','Nutrição e Dietética','Serviço Social',
+  'Enfermagem Ambulatorial','Farmácia Clínica','Acupuntura (Fisioterapia)',
+  'Auriculoterapia','Pilates Terapêutico','Reabilitação Física',
+];
+
+function criarServicosGrid(lista, containerId) {
+  const c = document.getElementById(containerId);
+  lista.forEach(srv => {
+    const id = 'srv_' + srv.replace(/\W/g,'_');
+    const lbl = document.createElement('label');
+    lbl.className = 'servico-item';
+    lbl.innerHTML = `<input type="checkbox" id="${id}" value="${srv}"> ${srv}`;
+    c.appendChild(lbl);
+  });
+}
+criarServicosGrid(servicosMedicos, 'servicos-medicos');
+criarServicosGrid(servicosOdonto,  'servicos-odonto');
+criarServicosGrid(servicosOutros,  'servicos-outros');
+
+// ═══════════════════════════════════════════════════════════════
+// EQUIPAMENTOS — GERAÇÃO DINÂMICA
+// ═══════════════════════════════════════════════════════════════
+const listaEquipamentos = [
+  'Aparelho de Eletrocardiograma (ECG)','Aparelho de Ultrassonografia',
+  'Aparelho de Raio-X','Aparelho de Endoscopia','Aparelho de Colposcopia',
+  'Monitor Multiparâmetros','Desfibrilador','Oxímetro de Pulso',
+  'Nebulizador / Inalador','Aparelho de Pressão Arterial (Esfigmomanômetro)',
+  'Autoclave / Esterilizador','Balança Adulto','Balança Pediátrica',
+  'Glicosímetro','Oftalmoscópio / Tonômetro','Audiômetro',
+  'Equipamento de Odontologia (Cadeira + Equipo)','Aparelho de Raio-X Odontológico',
+  'Fototerapia','Laser Terapêutico','Aparelho de Eletroestimulação (TENS/FES)',
+];
+
+function criarEquipamentos() {
+  const wrap = document.getElementById('equipamentos-wrap');
+  const hdr = document.createElement('div');
+  hdr.className = 'equip-header equip-row';
+  hdr.innerHTML = `<span>Equipamento</span><span>Qtd.</span><span>Classificação</span><span>Situação</span><span></span>`;
+  wrap.appendChild(hdr);
+
+  listaEquipamentos.forEach(eq => {
+    const div = document.createElement('div');
+    div.className = 'equip-row';
+    div.innerHTML = `
+      <span style="font-size:12.5px">${eq}</span>
+      <input type="number" value="0" min="0" max="99" style="width:60px; padding:5px 8px; border:1px solid var(--cinza-borda); border-radius:4px;">
+      <select style="font-size:12px; padding:5px 6px; border:1px solid var(--cinza-borda); border-radius:4px;">
+        <option>N/A</option><option>Próprio</option><option>Locado</option><option>SUS</option>
+      </select>
+      <select style="font-size:12px; padding:5px 6px; border:1px solid var(--cinza-borda); border-radius:4px;">
+        <option>--</option><option>Em uso</option><option>Em manutenção</option><option>Inativo</option>
+      </select>
+      <span></span>`;
+    wrap.appendChild(div);
+  });
+}
+criarEquipamentos();
+
+// ═══════════════════════════════════════════════════════════════
+// RESUMO — FICHA 6
+// ═══════════════════════════════════════════════════════════════
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? (el.value || '—') : '—';
+}
+function radioVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : '—';
+}
+
+function gerarResumo() {
+  const resumo = document.getElementById('resumo-conteudo');
+  const srvSelecionados = [...document.querySelectorAll('.servico-item input:checked')].map(i=>i.value);
+
+  const opOper = radioVal('dados_operacionais');
+  const opSit  = radioVal('situacao_estab');
+  const opPessoa = radioVal('tipo_pessoa');
+  const docEstab = opPessoa === 'juridica' ? val('cnpj') : val('cpf');
+
+  resumo.innerHTML = `
+    <table style="width:100%; border-collapse:collapse; font-size:12.5px;">
+      <tbody>
+        <tr style="background:#F0FFFE">
+          <td colspan="2" style="padding:10px 12px; font-weight:700; color:var(--verde-amazonia); font-size:13px; border-bottom:2px solid var(--teal-light);">
+            📋 Ficha 1 — Identificação do Estabelecimento (Módulo Básico)
+          </td>
+        </tr>
+        ${linhaResumo('1 — Operação', opOper === 'I' ? 'INCLUSÃO' : opOper === 'A' ? 'ALTERAÇÃO' : 'EXCLUSÃO')}
+        ${linhaResumo('2.1 — CNES', val('cnes_existente'))}
+        ${linhaResumo('2.2/2.3 — Pessoa / Documento', `${opPessoa === 'juridica' ? 'Jurídica' : 'Física'} — ${docEstab}`)}
+        ${linhaResumo('2.5 — Situação', opSit === 'I' ? 'Individual' : 'Mantido')}
+        ${linhaResumo('2.6 — Tipo de Estabelecimento', val('tipo_estabelecimento'))}
+        ${linhaResumo('2.7 — Razão Social', val('razao_social'))}
+        ${linhaResumo('2.8 — Nome Fantasia', val('nome_fantasia'))}
+        ${linhaResumo('2.9/2.10/2.11/2.12 — Endereço', `${val('logradouro')}, ${val('numero_end')}${val('complemento') !== '—' ? ', '+val('complemento') : ''} — ${val('bairro')}`)}
+        ${linhaResumo('2.14/2.15/2.16 — Município / UF / CEP', `${val('municipio')} — ${val('uf')} | CEP: ${val('cep')}`)}
+        ${linhaResumo('2.19 — Distrito Sanitário', val('distrito_sanitario'))}
+        ${linhaResumo('2.21 — Telefone', val('telefone1'))}
+        ${linhaResumo('2.23 — E-mail', val('email'))}
+        ${linhaResumo('2.24 — Diretor/Gerente', val('diretor_clinico'))}
+        ${linhaResumo('3.1 — Nº Alvará / Data', `${val('alvara_num')} — ${val('alvara_data')}`)}
+        ${linhaResumo('3.1.3 — Órgão Expedidor', radioVal('orgao_expedidor'))}
+        <tr style="background:#F0FFFE">
+          <td colspan="2" style="padding:10px 12px; font-weight:700; color:var(--verde-amazonia); font-size:13px; border-bottom:2px solid var(--teal-light); border-top:4px solid #E0F2F1;">
+            👨‍⚕️ Responsável Técnico
+          </td>
+        </tr>
+        ${linhaResumo('Nome', val('rt_nome'))}
+        ${linhaResumo('CPF', val('rt_cpf'))}
+        ${linhaResumo('Conselho / Registro', val('rt_conselho') + ' nº ' + val('rt_numero_conselho') + ' — ' + val('rt_uf_conselho'))}
+        ${linhaResumo('Especialidade', val('rt_especialidade'))}
+        <tr style="background:#F0FFFE">
+          <td colspan="2" style="padding:10px 12px; font-weight:700; color:var(--verde-amazonia); font-size:13px; border-bottom:2px solid var(--teal-light); border-top:4px solid #E0F2F1;">
+            🩺 Serviços Selecionados
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding:10px 12px; color:#455A64; line-height:1.8;">
+            ${srvSelecionados.length > 0
+              ? srvSelecionados.map(s=>`<span style="display:inline-block;background:var(--verde-claro);color:var(--verde-escuro);border-radius:12px;padding:2px 10px;margin:3px;font-size:11.5px;font-weight:500;">${s}</span>`).join('')
+              : '<em style="color:#90A4AE">Nenhum serviço selecionado.</em>'}
+          </td>
+        </tr>
+      </tbody>
+    </table>`;
+}
+
+function linhaResumo(label, valor) {
+  return `<tr style="border-bottom:1px solid #ECEFF1;">
+    <td style="padding:8px 12px; color:#90A4AE; font-weight:600; font-size:11.5px; width:35%; white-space:nowrap;">${label}</td>
+    <td style="padding:8px 12px; color:#263238;">${valor}</td>
+  </tr>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROTOCOLO
+// ═══════════════════════════════════════════════════════════════
+function gerarProtocolo() {
+  if (!document.getElementById('aceite_declaracao').checked) {
+    alert('⚠️  Você deve marcar a declaração de veracidade para prosseguir.');
+    return;
+  }
+  const ano = new Date().getFullYear();
+  const num = String(Math.floor(Math.random() * 900000) + 100000);
+  const protocolo = `SMSA-${ano}-${num}`;
+  document.getElementById('numero-protocolo').textContent = protocolo;
+
+  const agora = new Date();
+  document.getElementById('data-protocolo').textContent =
+    agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR');
+
+  // ocultar fichas, mostrar confirmação
+  document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
+  document.getElementById('tela-confirmacao').style.display = 'block';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ═══════════════════════════════════════════════════════════════
+// IMPRESSÃO
+// ═══════════════════════════════════════════════════════════════
+function imprimirFicha() {
+  window.print();
+}
+
+function novoPreenchimento() {
+  if (confirm('Isso irá limpar todos os dados preenchidos. Deseja continuar?')) {
+    location.reload();
+  }
+}
+</script>
+</body>
+</html>

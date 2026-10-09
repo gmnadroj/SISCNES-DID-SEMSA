@@ -500,14 +500,22 @@
   /* ── PRINT ─────────────────────────────────────────────────── */
   @media print {
     header, .progress-bar-wrap, .nav-buttons, .aviso-lgpd,
-    .btn-add-linha, .btn-del-linha, #tela-confirmacao .nav-buttons { display: none !important; }
+    .btn-add-linha, .btn-del-linha, #tela-confirmacao .nav-buttons,
+    #msg-assinatura, button[onclick*="limpar"], button[onclick*="salvar"],
+    button[onclick*="replicar"] { display: none !important; }
     body { background: white; }
     .main-wrap { max-width: 100%; margin: 0; padding: 0; }
     .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; margin-bottom: 12px; }
     .form-section { display: block !important; }
     #tela-confirmacao { display: block !important; }
     .protocolo-card { background: #004D40 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #canvas-assinatura { border: 1px solid #333 !important; background: white !important; }
+    #canvas-placeholder { display: none !important; }
   }
+
+  /* ── CANVAS ASSINATURA ─────────────────────────────────────── */
+  #canvas-assinatura { display: block; width: 100%; height: 130px; }
+  @media (max-width: 640px) { #canvas-assinatura { height: 100px; } }
 </style>
 </head>
 <body>
@@ -638,6 +646,7 @@
           <label>2.6 — Tipo de Estabelecimento / Unidade <span class="req">*</span></label>
           <select id="tipo_estabelecimento" required onchange="toggleIndigena(this)">
             <option value="">Selecione o tipo de estabelecimento...</option>
+            <option value="01">01 — Posto de Saúde</option>
             <option value="02">02 — Centro de Saúde / Unidade Básica de Saúde (UBS)</option>
             <option value="04">04 — Policlínica</option>
             <option value="15">15 — Unidade Mista</option>
@@ -674,7 +683,81 @@
         <!-- 2.8 Nome Fantasia -->
         <div class="campo col-span-2">
           <label>2.8 — Nome Fantasia</label>
-          <input type="text" id="nome_fantasia" placeholder="Se houver, conforme Alvará de Licença. Caso contrário, ficará igual à Razão Social.">
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="nome_fantasia" placeholder="Conforme Alvará de Licença. Se não houver, será igual à Razão Social." style="flex:1">
+            <button type="button" onclick="replicarRazaoSocial()" style="padding:9px 14px;background:var(--verde-claro);border:1.5px solid var(--teal);border-radius:6px;font-size:12px;font-weight:600;color:var(--verde-escuro);cursor:pointer;white-space:nowrap">↩ Usar Razão Social</button>
+          </div>
+          <span class="hint">
+            <strong>INCLUSÃO:</strong> preencher conforme o Alvará de Licença. Se não houver nome fantasia, clique em "Usar Razão Social" para repetir o campo 2.7.
+            <strong>ALTERAÇÃO:</strong> preencher somente se este for o campo a ser alterado.
+          </span>
+        </div>
+
+        <!-- 3.2 Dados Bancários (campo de Ident. Principal) -->
+        <div class="campo col-span-2" style="margin-top:8px">
+          <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);padding-bottom:6px;border-bottom:1px solid var(--teal-light);margin-bottom:12px;">3.2 — Dados Bancários</p>
+          <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:10px;">Preencher somente quando o estabelecimento privado for contratado pelo SUS.</p>
+          <div class="grid grid-3">
+            <div class="campo">
+              <label>3.2.1 — Banco (Código / Nome)</label>
+              <input type="text" id="banco_codigo" placeholder="Cód. — Nome do banco">
+            </div>
+            <div class="campo">
+              <label>3.2.2 — Agência (Código / Nome)</label>
+              <input type="text" id="agencia_codigo" placeholder="Cód. — Nome da agência">
+            </div>
+            <div class="campo">
+              <label>3.2.3 — Conta Corrente</label>
+              <input type="text" id="conta_corrente" placeholder="Número da conta corrente">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.3 Representante Legal (campo de Ident. Principal) -->
+        <div class="campo col-span-2" style="margin-top:8px">
+          <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);padding-bottom:6px;border-bottom:1px solid var(--teal-light);margin-bottom:12px;">3.3 — Representante Legal</p>
+          <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:10px;">Preencher somente para instituições filantrópicas sem fins lucrativos.</p>
+          <div class="grid grid-2">
+            <div class="campo">
+              <label>3.3.1 — CPF do Representante Legal</label>
+              <input type="text" id="rep_cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+            </div>
+            <div class="campo">
+              <label>3.3.2 — Nome do Representante Legal</label>
+              <input type="text" id="rep_nome" placeholder="Nome completo, sem abreviações">
+            </div>
+            <div class="campo">
+              <label>3.3.3 — Cargo</label>
+              <input type="text" id="rep_cargo" placeholder="Ex: Presidente, Diretor Executivo...">
+            </div>
+            <div class="campo">
+              <label>3.3.4 — E-mail (institucional preferencialmente)</label>
+              <input type="email" id="rep_email" placeholder="email@instituicao.org.br">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.4 Mapeamento Indígena (campo de Ident. Principal — somente tipo 72) -->
+        <div class="campo col-span-2" id="secao-indigena" style="display:none;margin-top:8px">
+          <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);padding-bottom:6px;border-bottom:1px solid var(--teal-light);margin-bottom:10px;">3.4 — Mapeamento Indígena</p>
+          <div class="alerta alerta-aviso" style="margin-bottom:10px">
+            <span>⚠️</span>
+            <span>Preencher <strong>somente</strong> para estabelecimentos do tipo <strong>72 — Unidade de Atenção à Saúde Indígena</strong>.</span>
+          </div>
+          <div class="grid grid-3">
+            <div class="campo">
+              <label>3.4.1 — Aldeia</label>
+              <input type="text" id="aldeia" placeholder="Nome da aldeia indígena">
+            </div>
+            <div class="campo">
+              <label>3.4.2 — Pólo-Base</label>
+              <input type="text" id="polo_base" placeholder="Nome do pólo-base">
+            </div>
+            <div class="campo">
+              <label>3.4.3 — DSEI</label>
+              <input type="text" id="dsei" placeholder="Distrito Sanitário Especial Indígena">
+            </div>
+          </div>
         </div>
 
       </div>
@@ -797,19 +880,19 @@
       </div>
     </div>
 
-    <!-- ── 3. IDENTIFICAÇÃO COMPLEMENTAR ─────────────────── -->
+    <!-- ── 3. IDENTIFICAÇÃO COMPLEMENTAR — somente Vigilância Sanitária ── -->
     <div class="card">
       <div class="card-title">3 — IDENTIFICAÇÃO COMPLEMENTAR</div>
 
-      <!-- 3.1 Vigilância Sanitária -->
-      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
+      <div class="alerta alerta-info" style="margin-bottom:16px">
+        <span>ℹ️</span>
+        <span>Conforme instrutivo da SEMSA Manaus: o <strong>Órgão Expedidor é sempre SMS</strong> (Secretaria Municipal de Saúde). O número do alvará deve estar vigente. Exemplo: <em>1234/2025</em>.</span>
+      </div>
+
+      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
         3.1 — Vigilância Sanitária
       </p>
-      <div class="alerta alerta-info" style="margin-bottom:14px">
-        <span>ℹ️</span>
-        <span>Conforme instrutivo da SEMSA Manaus: o Órgão Expedidor para estabelecimentos no município de Manaus é <strong>sempre SMS</strong> (Secretaria Municipal de Saúde). O número do alvará deve estar vigente (Ex: 1234/2025).</span>
-      </div>
-      <div class="grid grid-3" style="margin-bottom:28px">
+      <div class="grid grid-3">
         <div class="campo">
           <label>3.1.1 — Nº do Alvará <span class="req">*</span></label>
           <input type="text" id="alvara_num" placeholder="Ex: 1234/2025" required>
@@ -824,83 +907,59 @@
             <label class="opcao"><input type="radio" name="orgao_expedidor" value="SES"> SES</label>
             <label class="opcao"><input type="radio" name="orgao_expedidor" value="SMS" checked> SMS ✓</label>
           </div>
-          <span class="hint">Para Manaus: sempre marcar SMS.</span>
+          <span class="hint">Para Manaus: sempre marcar <strong>SMS</strong>.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ASSINATURA E CARIMBO DIGITAL ───────────────────── -->
+    <div class="card">
+      <div class="card-title">✍️ Assinatura e Carimbo do Responsável pelo Estabelecimento</div>
+      <div class="alerta alerta-aviso" style="margin-bottom:16px">
+        <span>⚠️</span>
+        <span><strong>Obrigatório em todas as fichas</strong>, conforme instrutivo SEMSA Manaus. Assine no campo abaixo usando o mouse ou o dedo (tela touch). Em impressão, o campo será exibido para assinatura manual.</span>
+      </div>
+      <div class="grid grid-2" style="margin-bottom:16px">
+        <div class="campo">
+          <label>Nome do Signatário <span class="req">*</span></label>
+          <input type="text" id="signatario_nome" placeholder="Nome completo do responsável que assina">
+        </div>
+        <div class="campo">
+          <label>Cargo / Função</label>
+          <input type="text" id="signatario_cargo" placeholder="Ex: Diretor Clínico, Gerente, Proprietário">
+        </div>
+        <div class="campo">
+          <label>Data da Assinatura</label>
+          <input type="date" id="data_assinatura">
+        </div>
+        <div class="campo">
+          <label>Nº do Carimbo / CRM / Registro</label>
+          <input type="text" id="carimbo_num" placeholder="Ex: CRM/AM 00000">
         </div>
       </div>
 
-      <!-- 3.2 Dados Bancários -->
-      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
-        3.2 — Dados Bancários
-      </p>
-      <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px;">
-        Preencher somente quando o estabelecimento privado for contratado pelo SUS.
-      </p>
-      <div class="grid grid-3" style="margin-bottom:28px">
-        <div class="campo">
-          <label>3.2.1 — Banco (Código / Nome)</label>
-          <input type="text" id="banco_codigo" placeholder="Cód. banco — Nome do banco">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label style="font-size:12px;font-weight:600;color:var(--cinza-texto)">Assinatura Digital <span style="color:var(--laranja)">*</span></label>
+        <div style="position:relative;border:2px dashed var(--cinza-borda);border-radius:8px;background:#FAFAFA;overflow:hidden">
+          <canvas id="canvas-assinatura"
+            style="display:block;width:100%;height:130px;cursor:crosshair;touch-action:none"
+            width="860" height="130">
+          </canvas>
+          <span id="canvas-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;color:#B0BEC5;pointer-events:none;white-space:nowrap">
+            ✍️ Assine aqui (mouse ou toque)
+          </span>
         </div>
-        <div class="campo">
-          <label>3.2.2 — Agência (Código / Nome)</label>
-          <input type="text" id="agencia_codigo" placeholder="Cód. agência — Nome da agência">
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button type="button" onclick="limparAssinatura()" class="btn btn-secondary" style="padding:7px 14px;font-size:12.5px;">
+            🗑 Limpar Assinatura
+          </button>
+          <button type="button" onclick="salvarAssinatura()" class="btn btn-primary" style="padding:7px 14px;font-size:12.5px;">
+            💾 Confirmar Assinatura
+          </button>
+          <span id="msg-assinatura" style="font-size:12px;color:var(--ok);align-self:center;display:none">✅ Assinatura confirmada</span>
         </div>
-        <div class="campo">
-          <label>3.2.3 — Conta Corrente</label>
-          <input type="text" id="conta_corrente" placeholder="Número da conta corrente">
-        </div>
+        <span class="hint">A assinatura será incluída na ficha para impressão/PDF. Para carimbo físico, imprima e aplique após assinar.</span>
       </div>
-
-      <!-- 3.3 Representante Legal -->
-      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
-        3.3 — Representante Legal
-      </p>
-      <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px;">
-        Preencher somente para instituições filantrópicas sem fins lucrativos.
-      </p>
-      <div class="grid grid-2" style="margin-bottom:28px">
-        <div class="campo">
-          <label>3.3.1 — CPF do Representante Legal</label>
-          <input type="text" id="rep_cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
-        </div>
-        <div class="campo">
-          <label>3.3.2 — Nome do Representante Legal</label>
-          <input type="text" id="rep_nome" placeholder="Nome completo, sem abreviações">
-        </div>
-        <div class="campo">
-          <label>3.3.3 — Cargo</label>
-          <input type="text" id="rep_cargo" placeholder="Ex: Presidente, Diretor Executivo, Superintendente...">
-        </div>
-        <div class="campo">
-          <label>3.3.4 — E-mail (institucional preferencialmente)</label>
-          <input type="email" id="rep_email" placeholder="email@instituicao.org.br">
-        </div>
-      </div>
-
-      <!-- 3.4 Mapeamento Indígena (visível somente para tipo 72) -->
-      <div id="secao-indigena" style="display:none">
-        <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
-          3.4 — Mapeamento Indígena
-        </p>
-        <div class="alerta alerta-aviso" style="margin-bottom:12px">
-          <span>⚠️</span>
-          <span>Preencher <strong>somente</strong> para estabelecimentos do <strong>tipo 72 — Unidade de Atenção à Saúde Indígena</strong>.</span>
-        </div>
-        <div class="grid grid-3">
-          <div class="campo">
-            <label>3.4.1 — Aldeia</label>
-            <input type="text" id="aldeia" placeholder="Nome da aldeia indígena">
-          </div>
-          <div class="campo">
-            <label>3.4.2 — Pólo-Base</label>
-            <input type="text" id="polo_base" placeholder="Nome do pólo-base">
-          </div>
-          <div class="campo">
-            <label>3.4.3 — DSEI</label>
-            <input type="text" id="dsei" placeholder="Distrito Sanitário Especial Indígena">
-          </div>
-        </div>
-      </div>
-
     </div>
 
     <div class="nav-buttons">
@@ -1332,6 +1391,102 @@ function toggleTipoPessoa(el) {
 function toggleIndigena(el) {
   const secao = document.getElementById('secao-indigena');
   if (secao) secao.style.display = el.value === '72' ? '' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NOME FANTASIA — replica Razão Social quando não houver
+// ═══════════════════════════════════════════════════════════════
+function replicarRazaoSocial() {
+  const rs = document.getElementById('razao_social').value.trim();
+  if (!rs) { alert('Preencha primeiro o campo 2.7 — Razão Social.'); return; }
+  document.getElementById('nome_fantasia').value = rs;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ASSINATURA DIGITAL — canvas
+// ═══════════════════════════════════════════════════════════════
+(function() {
+  let canvas, ctx, desenhando = false, temTraco = false;
+
+  function initCanvas() {
+    canvas = document.getElementById('canvas-assinatura');
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+    ctx.strokeStyle = '#1A237E';
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    function getPonto(e) {
+      const r = canvas.getBoundingClientRect();
+      const scaleX = canvas.width  / r.width;
+      const scaleY = canvas.height / r.height;
+      if (e.touches) {
+        return {
+          x: (e.touches[0].clientX - r.left) * scaleX,
+          y: (e.touches[0].clientY - r.top)  * scaleY
+        };
+      }
+      return {
+        x: (e.clientX - r.left) * scaleX,
+        y: (e.clientY - r.top)  * scaleY
+      };
+    }
+
+    function iniciar(e) {
+      e.preventDefault();
+      desenhando = true;
+      const p = getPonto(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      document.getElementById('canvas-placeholder').style.display = 'none';
+      document.getElementById('msg-assinatura').style.display = 'none';
+    }
+    function desenhar(e) {
+      if (!desenhando) return;
+      e.preventDefault();
+      const p = getPonto(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      temTraco = true;
+    }
+    function parar(e) { e.preventDefault(); desenhando = false; ctx.beginPath(); }
+
+    canvas.addEventListener('mousedown',  iniciar,  { passive: false });
+    canvas.addEventListener('mousemove',  desenhar, { passive: false });
+    canvas.addEventListener('mouseup',    parar,    { passive: false });
+    canvas.addEventListener('mouseleave', parar,    { passive: false });
+    canvas.addEventListener('touchstart', iniciar,  { passive: false });
+    canvas.addEventListener('touchmove',  desenhar, { passive: false });
+    canvas.addEventListener('touchend',   parar,    { passive: false });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCanvas);
+  // re-init quando a ficha 0 ficar visível
+  document.addEventListener('click', function(e) {
+    if (!canvas) setTimeout(initCanvas, 100);
+  });
+})();
+
+function limparAssinatura() {
+  const canvas = document.getElementById('canvas-assinatura');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById('canvas-placeholder').style.display = '';
+  document.getElementById('msg-assinatura').style.display = 'none';
+}
+
+function salvarAssinatura() {
+  const canvas = document.getElementById('canvas-assinatura');
+  if (!canvas) return;
+  // verifica se há traço (pixel não-transparente)
+  const data = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+  const temTraco = Array.from(data).some((v, i) => i % 4 === 3 && v > 0);
+  if (!temTraco) { alert('Por favor, realize a assinatura no campo antes de confirmar.'); return; }
+  const msg = document.getElementById('msg-assinatura');
+  msg.style.display = 'inline';
+  setTimeout(() => { msg.style.display = 'none'; }, 4000);
 }
 
 // ═══════════════════════════════════════════════════════════════

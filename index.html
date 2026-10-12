@@ -1823,10 +1823,14 @@ async function baixarFichaOficial() {
     // ════════════════════════════════════════
     // 1 — DADOS OPERACIONAIS
     // ════════════════════════════════════════
+    // Dados Operacionais — checkboxes ficam APÓS cada palavra
+    // INCLUSÃO  x1=259.1 → caixa a partir de 262
+    // ALTERAÇÃO x1=392.1 → caixa a partir de 395
+    // EXCLUSÃO  x1=516.9 → caixa a partir de 520
     const op = rd('dados_operacionais');
-    if (op === 'I') chk(247, 745);
-    if (op === 'A') chk(373, 745);
-    if (op === 'E') chk(503, 745);
+    if (op === 'I') chk(263, 745);
+    if (op === 'A') chk(396, 745);
+    if (op === 'E') chk(521, 745);
 
     // ════════════════════════════════════════
     // 2 — IDENTIFICAÇÃO PRINCIPAL
@@ -1905,9 +1909,12 @@ async function baixarFichaOficial() {
     // 3.1 Vigilância Sanitária
     txt(v('alvara_num'),          58, 269, 8, 134);
     txt(fmtData(v('alvara_data')),199, 269, 8, 178);
+    // Órgão Expedidor — checkboxes ficam APÓS cada rótulo
+    // SES  x0=435.4, x1=449.4 → caixa a partir de 452
+    // SMS  x0=508.9, x1=524.0 → caixa a partir de 527
     const orgao = rd('orgao_expedidor');
-    if (orgao === 'SES') chk(441, 269);
-    if (orgao === 'SMS') chk(472, 269);
+    if (orgao === 'SES') chk(453, 269);
+    if (orgao === 'SMS') chk(528, 269);
 
     // 3.2 Dados Bancários
     txt(v('banco_codigo'),   48, 226, 8,  55);

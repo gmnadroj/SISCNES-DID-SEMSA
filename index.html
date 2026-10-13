@@ -546,10 +546,10 @@
         <div class="step-num">4</div> Serviços
       </div>
       <div class="step-tab" onclick="irParaFicha(4)">
-        <div class="step-num">5</div> Equipamentos
+        <div class="step-num">5</div> Instalações + Equip.
       </div>
       <div class="step-tab" onclick="irParaFicha(5)">
-        <div class="step-num">6</div> Confirmação
+        <div class="step-num">6</div> Download Fichas
       </div>
     </div>
   </div>
@@ -700,12 +700,20 @@
           <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:10px;">Preencher somente quando o estabelecimento privado for contratado pelo SUS.</p>
           <div class="grid grid-3">
             <div class="campo">
-              <label>3.2.1 — Banco (Código / Nome)</label>
-              <input type="text" id="banco_codigo" placeholder="Cód. — Nome do banco">
+              <label>3.2.1 — Banco — Código</label>
+              <input type="text" id="banco_codigo" placeholder="Ex: 237">
             </div>
             <div class="campo">
-              <label>3.2.2 — Agência (Código / Nome)</label>
-              <input type="text" id="agencia_codigo" placeholder="Cód. — Nome da agência">
+              <label>3.2.1 — Banco — Nome</label>
+              <input type="text" id="banco_nome" placeholder="Ex: Bradesco">
+            </div>
+            <div class="campo">
+              <label>3.2.2 — Agência — Código</label>
+              <input type="text" id="agencia_codigo" placeholder="Ex: 1234-5">
+            </div>
+            <div class="campo">
+              <label>3.2.2 — Agência — Nome</label>
+              <input type="text" id="agencia_nome" placeholder="Ex: Agência Centro Manaus">
             </div>
             <div class="campo">
               <label>3.2.3 — Conta Corrente</label>
@@ -963,6 +971,228 @@
       </div>
     </div>
 
+
+    <!-- ── FCES FICHA 02 — CARACTERIZAÇÃO (campos 5.1 a 5.10) ── -->
+    <div class="card">
+      <div class="card-title">📊 FCES Ficha 02 — Caracterização (campos 5.1 a 5.10)</div>
+
+      <div class="alerta alerta-info" style="margin-bottom:14px">
+        <span>ℹ️</span>
+        <span>Estes campos compõem a <strong>FCES Ficha 02 — Módulo Básico</strong>. São obrigatórios para todos os estabelecimentos de saúde. O campo 5.5 (Tipo de Prestador) é preenchido automaticamente pelo sistema CNES ao verificar os campos 5.1, 5.2, 5.3 e 5.4.</span>
+      </div>
+
+      <div class="grid grid-2">
+        <!-- 5.1 Esfera Administrativa -->
+        <div class="campo">
+          <label>5.1 — Esfera Administrativa <span class="req">*</span></label>
+          <select id="esfera_adm" required>
+            <option value="">Selecione...</option>
+            <option value="01">01 — Federal</option>
+            <option value="02">02 — Estadual</option>
+            <option value="03">03 — Municipal</option>
+            <option value="04">04 — Privada</option>
+          </select>
+        </div>
+
+        <!-- 5.2 Natureza da Organização -->
+        <div class="campo">
+          <label>5.2 — Natureza da Organização <span class="req">*</span></label>
+          <select id="natureza_juridica" required>
+            <option value="">Selecione...</option>
+            <option value="07">07 — Empresa</option>
+            <option value="08">08 — Fundação Privada</option>
+            <option value="09">09 — Cooperativa</option>
+            <option value="10">10 — Serviço Social Autônomo</option>
+            <option value="11">11 — Entidade Beneficente Sem Fins Lucrativos</option>
+            <option value="12">12 — Economia Mista</option>
+            <option value="13">13 — Sindicato</option>
+          </select>
+          <span class="hint">Pessoa Física → código 07 (Empresa).</span>
+        </div>
+
+        <!-- 5.3 Retenção de Tributos -->
+        <div class="campo">
+          <label>5.3 — Retenção de Tributos <span class="req">*</span></label>
+          <select id="retencao_tributos" required>
+            <option value="">Selecione...</option>
+            <option value="10">10 — Unidade Pública</option>
+            <option value="11">11 — Unidade Filantrópica</option>
+            <option value="12">12 — Unidade Sem Fins Lucrativos</option>
+            <option value="13">13 — Unidade Privada Lucrativa — Opção pelo Simples</option>
+            <option value="14">14 — Unidade Privada Lucrativa</option>
+            <option value="15">15 — Unidade Sindical</option>
+            <option value="16">16 — Unidade Pessoa Física</option>
+          </select>
+        </div>
+
+        <!-- 5.4 Atividade de Ensino/Pesquisa -->
+        <div class="campo">
+          <label>5.4 — Atividade de Ensino/Pesquisa <span class="req">*</span></label>
+          <select id="atividade_ensino" required>
+            <option value="">Selecione...</option>
+            <option value="01">01 — Unidade Universitária</option>
+            <option value="02">02 — Unidade Escola Superior Isolada</option>
+            <option value="03">03 — Unidade Auxiliar de Ensino</option>
+            <option value="04" selected>04 — Unidade Sem Atividade de Ensino</option>
+          </select>
+        </div>
+
+        <!-- 5.6 Nível de Hierarquia -->
+        <div class="campo">
+          <label>5.6 — Nível de Hierarquia <span class="req">*</span></label>
+          <select id="nivel_hierarquia" required>
+            <option value="">Selecione...</option>
+            <option value="01">01 — Atenção Básica (PAB/PABA)</option>
+            <option value="02">02 — Média Complexidade 1º nível (M1)</option>
+            <option value="03">03 — Média Complexidade 2º/3º nível (M2/M3)</option>
+            <option value="04">04 — Alta Complexidade Ambulatorial</option>
+            <option value="05">05 — Hospitalar + 1º Atend. + Procedimentos Menores</option>
+            <option value="06">06 — Hospitalar Média Complexidade</option>
+            <option value="07">07 — Hospitalar Média + SADT Alta Complexidade</option>
+            <option value="08">08 — Alta Complexidade Hospitalar/Ambulatorial</option>
+          </select>
+        </div>
+
+        <!-- 5.7 Fluxo de Clientela -->
+        <div class="campo">
+          <label>5.7 — Fluxo de Clientela <span class="req">*</span></label>
+          <select id="fluxo_clientela" required>
+            <option value="">Selecione...</option>
+            <option value="01">01 — Atendimento de Demanda Espontânea</option>
+            <option value="02">02 — Atendimento de Demanda Referenciada</option>
+            <option value="03">03 — Demanda Espontânea e Referenciada</option>
+          </select>
+        </div>
+
+        <!-- 5.8 Turno de Atendimento -->
+        <div class="campo">
+          <label>5.8 — Turno de Atendimento <span class="req">*</span></label>
+          <select id="turno_atendimento" required>
+            <option value="">Selecione...</option>
+            <option value="01">01 — Somente pela manhã</option>
+            <option value="02">02 — Somente à tarde</option>
+            <option value="03">03 — Manhã e tarde</option>
+            <option value="04">04 — Manhã, tarde e noite</option>
+            <option value="05">05 — Turnos intermitentes</option>
+            <option value="06">06 — Contínuo 24h (plantão, sábados, domingos e feriados)</option>
+          </select>
+        </div>
+
+        <!-- 5.9 Nível de Atenção -->
+        <div class="campo col-span-2">
+          <label>5.9 — Nível de Atenção <span class="req">*</span></label>
+          <div class="grid grid-2" style="margin-top:8px;gap:10px">
+            <div style="background:#F9FAFB;border:1px solid var(--cinza-borda);border-radius:8px;padding:12px">
+              <p style="font-size:12px;font-weight:700;color:var(--verde-amazonia);margin-bottom:8px">Ambulatorial</p>
+              <div class="campo" style="margin-bottom:8px">
+                <label style="font-size:11.5px">Atividade</label>
+                <select id="atencao_amb_atividade">
+                  <option value="">Não se aplica</option>
+                  <option value="AB">Atenção Básica</option>
+                  <option value="MC">Média Complexidade</option>
+                  <option value="AC">Alta Complexidade</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label style="font-size:11.5px">Gestão</label>
+                <div class="opcoes" style="margin-top:4px">
+                  <label class="opcao" style="font-size:11.5px"><input type="checkbox" id="atencao_amb_est" style="accent-color:var(--teal)"> Estadual</label>
+                  <label class="opcao" style="font-size:11.5px"><input type="checkbox" id="atencao_amb_mun" checked style="accent-color:var(--teal)"> Municipal</label>
+                </div>
+              </div>
+            </div>
+            <div style="background:#F9FAFB;border:1px solid var(--cinza-borda);border-radius:8px;padding:12px">
+              <p style="font-size:12px;font-weight:700;color:var(--cinza-texto);margin-bottom:8px">Hospitalar</p>
+              <div class="campo" style="margin-bottom:8px">
+                <label style="font-size:11.5px">Atividade</label>
+                <select id="atencao_hosp_atividade">
+                  <option value="">Não se aplica</option>
+                  <option value="MC">Média Complexidade</option>
+                  <option value="AC">Alta Complexidade</option>
+                </select>
+              </div>
+              <div class="campo">
+                <label style="font-size:11.5px">Gestão</label>
+                <div class="opcoes" style="margin-top:4px">
+                  <label class="opcao" style="font-size:11.5px"><input type="checkbox" id="atencao_hosp_est" style="accent-color:var(--teal)"> Estadual</label>
+                  <label class="opcao" style="font-size:11.5px"><input type="checkbox" id="atencao_hosp_mun" style="accent-color:var(--teal)"> Municipal</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5.10 Atendimento Prestado -->
+        <div class="campo col-span-2">
+          <label>5.10 — Atendimento Prestado <span class="req">*</span></label>
+          <div style="overflow-x:auto;margin-top:8px">
+            <table class="tabela-dinamica">
+              <thead>
+                <tr>
+                  <th>Tipo de Atendimento</th>
+                  <th>SUS</th>
+                  <th>Particular</th>
+                  <th>Plano de Saúde Público</th>
+                  <th>Plano de Saúde Privado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1 — Internação</td>
+                  <td><input type="checkbox" id="at_int_sus"   style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_int_part"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_int_ppub"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_int_ppriv" style="accent-color:var(--teal)"></td>
+                </tr>
+                <tr>
+                  <td>2 — Ambulatorial</td>
+                  <td><input type="checkbox" id="at_amb_sus"   style="accent-color:var(--teal)" checked></td>
+                  <td><input type="checkbox" id="at_amb_part"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_amb_ppub"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_amb_ppriv" style="accent-color:var(--teal)"></td>
+                </tr>
+                <tr>
+                  <td>3 — SADT</td>
+                  <td><input type="checkbox" id="at_sadt_sus"   style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_sadt_part"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_sadt_ppub"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_sadt_ppriv" style="accent-color:var(--teal)"></td>
+                </tr>
+                <tr>
+                  <td>4 — Urgência</td>
+                  <td><input type="checkbox" id="at_urg_sus"   style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_urg_part"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_urg_ppub"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_urg_ppriv" style="accent-color:var(--teal)"></td>
+                </tr>
+                <tr>
+                  <td>5 — Outros</td>
+                  <td><input type="checkbox" id="at_out_sus"   style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_out_part"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_out_ppub"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_out_ppriv" style="accent-color:var(--teal)"></td>
+                </tr>
+                <tr>
+                  <td>6 — Vigilância em Saúde</td>
+                  <td><input type="checkbox" id="at_vig_sus"   style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_vig_part"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_vig_ppub"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_vig_ppriv" style="accent-color:var(--teal)"></td>
+                </tr>
+                <tr>
+                  <td>7 — Regulação</td>
+                  <td><input type="checkbox" id="at_reg_sus"   style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_reg_part"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_reg_ppub"  style="accent-color:var(--teal)"></td>
+                  <td><input type="checkbox" id="at_reg_ppriv" style="accent-color:var(--teal)"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="nav-buttons">
       <button id="btn-baixar-ficha"
         class="btn btn-print"
@@ -1092,56 +1322,13 @@
       <span>Inclua <strong>todos</strong> os profissionais que atuam no estabelecimento, mesmo que em regime parcial. Cada profissional precisa ter registro ativo no respectivo conselho de classe.</span>
     </div>
 
-    <div class="card">
-      <div class="card-title">👨‍⚕️ Quadro de Profissionais</div>
-      <div style="overflow-x:auto">
-        <table class="tabela-dinamica" id="tabela-profissionais">
-          <thead>
-            <tr>
-              <th>Nome Completo</th>
-              <th>CPF</th>
-              <th>Conselho</th>
-              <th>Nº Registro</th>
-              <th>CBO (Ocupação)</th>
-              <th>Vínculo</th>
-              <th>CH Ambulatorial</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="tbody-profissionais">
-            <tr>
-              <td><input type="text" placeholder="Nome completo"></td>
-              <td><input type="text" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)"></td>
-              <td>
-                <select>
-                  <option value="">--</option>
-                  <option>CRM</option><option>CRO</option>
-                  <option>CFP</option><option>CREFITO</option>
-                  <option>CRN</option><option>COREN</option>
-                  <option>CFF</option><option>CRFa</option>
-                  <option>OUTRO</option>
-                </select>
-              </td>
-              <td><input type="text" placeholder="Nº Registro"></td>
-              <td><input type="text" placeholder="225125 — Médico Clínico"></td>
-              <td>
-                <select>
-                  <option value="">--</option>
-                  <option>Proprietário</option>
-                  <option>CLT</option>
-                  <option>Autônomo</option>
-                  <option>Servidor</option>
-                  <option>Voluntário</option>
-                </select>
-              </td>
-              <td><input type="number" placeholder="20" min="1" max="60" style="width:70px"></td>
-              <td><button class="btn-del-linha" onclick="removerLinha(this, 'tbody-profissionais')">🗑</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <button class="btn-add-linha" onclick="adicionarProfissional()">+ Adicionar Profissional</button>
+    <div class="alerta alerta-info" style="margin-bottom:14px">
+      <span>ℹ️</span>
+      <span>Preencha os dados completos de cada profissional conforme as <strong>Fichas 20 e 21 da FCES</strong>. Os dados de identificação pessoal (seção 34.1) e residenciais (seção 34.2) são obrigatórios para submissão ao DATASUS. Clique em <strong>"+ Adicionar Profissional"</strong> para incluir cada profissional em formulário individual.</span>
     </div>
+
+    <div id="profissionais-lista"></div>
+    <button class="btn-add-linha" onclick="adicionarProfissionalForm()" style="margin-bottom:8px">+ Adicionar Profissional (Fichas 20/21)</button>
 
     <div class="nav-buttons">
       <button class="btn btn-secondary" onclick="fichaAnterior(2)">← Anterior</button>
@@ -1186,21 +1373,154 @@
       </div>
     </div>
 
+
+    <!-- ── FCES FICHA 07 — SERVIÇOS DE APOIO (seção 16) ──────── -->
+    <div class="card">
+      <div class="card-title">🔧 FCES Ficha 07 — Serviços de Apoio (seção 16)</div>
+      <p style="font-size:12px;color:var(--cinza-texto);margin-bottom:14px">
+        Para cada serviço, indique se é executado com estrutura <strong>Própria</strong> (funcionários do próprio estabelecimento) ou <strong>Terceirizada</strong> (empresa contratada, mesmo dentro das instalações). Deixe ambos desmarcados se o serviço não existir no estabelecimento.
+      </p>
+      <div style="overflow-x:auto">
+        <table class="tabela-dinamica">
+          <thead>
+            <tr><th>Serviço</th><th>Próprio</th><th>Terceirizado</th></tr>
+          </thead>
+          <tbody id="tbody-servicos-apoio">
+            <tr><td>01 — SAME ou SPP (Serviço de Prontuário do Paciente)</td><td><input type="checkbox" id="sap_01_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_01_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>02 — Serviço Social</td><td><input type="checkbox" id="sap_02_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_02_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>03 — Farmácia</td><td><input type="checkbox" id="sap_03_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_03_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>04 — Central de Esterilização de Materiais</td><td><input type="checkbox" id="sap_04_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_04_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>05 — Nutrição e Dietética (S.N.D.)</td><td><input type="checkbox" id="sap_05_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_05_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>06 — Lactário</td><td><input type="checkbox" id="sap_06_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_06_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>07 — Banco de Leite</td><td><input type="checkbox" id="sap_07_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_07_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>08 — Lavanderia</td><td><input type="checkbox" id="sap_08_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_08_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>09 — Serviço de Manutenção de Equipamentos</td><td><input type="checkbox" id="sap_09_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_09_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>10 — Ambulância</td><td><input type="checkbox" id="sap_10_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_10_terc" style="accent-color:var(--teal)"></td></tr>
+            <tr><td>11 — Necrotério</td><td><input type="checkbox" id="sap_11_prop" style="accent-color:var(--teal)"></td><td><input type="checkbox" id="sap_11_terc" style="accent-color:var(--teal)"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="nav-buttons">
       <button class="btn btn-secondary" onclick="fichaAnterior(3)">← Anterior</button>
       <button class="btn btn-primary" onclick="proximaFicha(3)">Próximo &nbsp;→</button>
     </div>
   </div>
 
-  <!-- ══════════════════════════════ FICHA 5 — EQUIPAMENTOS -->
+  <!-- ══════════════════════════════ FICHA 5 — INSTALAÇÕES + EQUIPAMENTOS -->
   <div class="form-section" id="ficha-4">
     <div class="section-header">
-      <div class="section-icon">🔬</div>
+      <div class="section-icon">🏗️</div>
       <div class="section-header-text">
-        <h2>Ficha 5 — Equipamentos</h2>
+        <h2>Ficha 5 — Instalações Físicas e Equipamentos (FCES 06 + Módulo Equipamentos)</h2>
         <p>Informe os equipamentos disponíveis e sua situação de uso. Deixe quantidade 0 para não disponível.</p>
       </div>
     </div>
+
+    <!-- ── FCES FICHA 06 — INSTALAÇÕES FÍSICAS (seção 15) ────── -->
+    <div class="card">
+      <div class="card-title">🏗️ FCES Ficha 06 — Instalações Físicas para a Assistência (seção 15)</div>
+
+      <div class="alerta alerta-info" style="margin-bottom:14px">
+        <span>ℹ️</span>
+        <span>Preencha <strong>apenas a área compatível com o tipo do seu estabelecimento</strong>. Consultórios e clínicas: seção <strong>15.2 Ambulatório</strong>. Hospitais: seção 15.3. Serviços de urgência/emergência: seção 15.1. Quando um tipo de instalação não existir, deixe em branco (não é necessário colocar zero).</span>
+      </div>
+
+      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--teal-light)">
+        15.2 — Ambulatório (para consultórios e clínicas)
+      </p>
+
+      <div class="grid grid-4" style="margin-bottom:18px">
+        <div class="campo">
+          <label>Consultórios Médicos — Clínicas Básicas</label>
+          <input type="number" id="inst_cm_basico" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Consultórios Médicos — Clínicas Especializadas</label>
+          <input type="number" id="inst_cm_espec" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Consultórios Médicos — Indiferenciado</label>
+          <input type="number" id="inst_cm_indf" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Outros Consultórios (não médicos)</label>
+          <input type="number" id="inst_cm_outros" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Odontologia — Consultórios</label>
+          <input type="number" id="inst_odonto" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Sala de Pequena Cirurgia</label>
+          <input type="number" id="inst_peq_cirurgia" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Sala de Enfermagem/Serviços</label>
+          <input type="number" id="inst_enfermagem" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Sala de Imunização</label>
+          <input type="number" id="inst_imunizacao" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Sala de Nebulização</label>
+          <input type="number" id="inst_nebulizacao" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Sala de Gesso</label>
+          <input type="number" id="inst_gesso" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Sala de Curativo</label>
+          <input type="number" id="inst_curativo" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Sala de Cirurgia Ambulatorial</label>
+          <input type="number" id="inst_cirurgia_amb" min="0" max="99" value="" placeholder="Qtd.">
+        </div>
+      </div>
+
+      <p style="font-size:12.5px;font-weight:700;color:var(--cinza-texto);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #ECEFF1">
+        Sala de Repouso / Observação
+      </p>
+      <div class="grid grid-4" style="margin-bottom:6px">
+        <div class="campo">
+          <label>Pediátrico — Salas</label>
+          <input type="number" id="inst_repo_ped_s" min="0" max="99" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Pediátrico — Leitos</label>
+          <input type="number" id="inst_repo_ped_l" min="0" max="99" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Feminino — Salas</label>
+          <input type="number" id="inst_repo_fem_s" min="0" max="99" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Feminino — Leitos</label>
+          <input type="number" id="inst_repo_fem_l" min="0" max="99" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Masculino — Salas</label>
+          <input type="number" id="inst_repo_mas_s" min="0" max="99" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Masculino — Leitos</label>
+          <input type="number" id="inst_repo_mas_l" min="0" max="99" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Indiferenciado — Salas</label>
+          <input type="number" id="inst_repo_ind_s" min="0" max="99" placeholder="Qtd.">
+        </div>
+        <div class="campo">
+          <label>Indiferenciado — Leitos</label>
+          <input type="number" id="inst_repo_ind_l" min="0" max="99" placeholder="Qtd.">
+        </div>
+      </div>
+    </div>
+
 
     <div class="alerta alerta-info">
       <span>ℹ️</span>
@@ -1265,13 +1585,85 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════ FICHA 6 — REVISÃO / ENVIO -->
+  <!-- ══════════════════════════════ FICHA 6 — DOWNLOAD FICHAS FCES -->
   <div class="form-section" id="ficha-5">
     <div class="section-header">
-      <div class="section-icon">✅</div>
+      <div class="section-icon">📂</div>
       <div class="section-header-text">
-        <h2>Ficha 6 — Revisão e Envio</h2>
-        <p>Revise os dados antes de gerar o protocolo e imprimir a ficha.</p>
+        <h2>Ficha 6 — Download das Fichas FCES Oficiais</h2>
+        <p>Valide o preenchimento e baixe cada ficha oficial do Ministério da Saúde com os dados inseridos.</p>
+      </div>
+    </div>
+
+    <!-- Painel de Validação -->
+    <div class="card" id="card-validacao">
+      <div class="card-title">✅ Validação dos Campos Obrigatórios</div>
+      <div id="validacao-resultado">
+        <p style="font-size:13px;color:var(--cinza-texto)">Clique em <strong>"Validar Preenchimento"</strong> para verificar os campos obrigatórios antes de baixar as fichas.</p>
+      </div>
+      <button class="btn btn-secondary" onclick="validarCampos()" style="margin-top:12px">
+        🔍 Validar Preenchimento
+      </button>
+    </div>
+
+    <!-- Download Fichas -->
+    <div class="card">
+      <div class="card-title">📥 Baixar Fichas FCES Oficiais</div>
+      <div class="alerta alerta-info" style="margin-bottom:16px">
+        <span>ℹ️</span>
+        <span>Cada botão gera o PDF oficial do Ministério da Saúde com os dados preenchidos. <strong>Recomenda-se validar o preenchimento antes de baixar.</strong> Os PDFs devem ser impressos, assinados e carimbados pelo responsável pelo estabelecimento.</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <!-- Ficha 01 -->
+        <div style="background:var(--verde-claro);border:1.5px solid var(--teal);border-radius:8px;padding:16px">
+          <p style="font-size:13px;font-weight:700;color:var(--verde-escuro);margin-bottom:4px">📄 FCES Ficha 01 — Módulo Básico</p>
+          <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px">Identificação Principal e Complementar</p>
+          <button id="btn-baixar-ficha" class="btn btn-print" onclick="baixarFichaOficial()" style="width:100%;justify-content:center">
+            ⬇️ Baixar Ficha 01 Preenchida
+          </button>
+          <p style="font-size:10.5px;color:var(--cinza-texto);margin-top:6px;text-align:center">PDF oficial embutido ✅</p>
+        </div>
+
+        <!-- Ficha 02 -->
+        <div style="background:#F9FAFB;border:1.5px solid var(--cinza-borda);border-radius:8px;padding:16px">
+          <p style="font-size:13px;font-weight:700;color:var(--cinza-texto);margin-bottom:4px">📄 FCES Ficha 02 — Módulo Básico</p>
+          <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px">Endereço Complementar e Caracterização</p>
+          <button class="btn btn-secondary" onclick="alert('Ficha 02: forneça o PDF template da FCES Ficha 02 para habilitar este botão.')" style="width:100%;justify-content:center">
+            ⬇️ Baixar Ficha 02 Preenchida
+          </button>
+          <p style="font-size:10.5px;color:#E65100;margin-top:6px;text-align:center">⏳ Aguardando PDF template</p>
+        </div>
+
+        <!-- Ficha 06 -->
+        <div style="background:#F9FAFB;border:1.5px solid var(--cinza-borda);border-radius:8px;padding:16px">
+          <p style="font-size:13px;font-weight:700;color:var(--cinza-texto);margin-bottom:4px">📄 FCES Ficha 06 — Módulo Conjunto</p>
+          <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px">Instalações Físicas para a Assistência</p>
+          <button class="btn btn-secondary" onclick="alert('Ficha 06: forneça o PDF template da FCES Ficha 06 para habilitar este botão.')" style="width:100%;justify-content:center">
+            ⬇️ Baixar Ficha 06 Preenchida
+          </button>
+          <p style="font-size:10.5px;color:#E65100;margin-top:6px;text-align:center">⏳ Aguardando PDF template</p>
+        </div>
+
+        <!-- Ficha 07 -->
+        <div style="background:#F9FAFB;border:1.5px solid var(--cinza-borda);border-radius:8px;padding:16px">
+          <p style="font-size:13px;font-weight:700;color:var(--cinza-texto);margin-bottom:4px">📄 FCES Ficha 07 — Módulo Conjunto</p>
+          <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px">Serviços de Apoio</p>
+          <button class="btn btn-secondary" onclick="alert('Ficha 07: forneça o PDF template da FCES Ficha 07 para habilitar este botão.')" style="width:100%;justify-content:center">
+            ⬇️ Baixar Ficha 07 Preenchida
+          </button>
+          <p style="font-size:10.5px;color:#E65100;margin-top:6px;text-align:center">⏳ Aguardando PDF template</p>
+        </div>
+
+        <!-- Fichas 20/21 -->
+        <div style="background:#F9FAFB;border:1.5px solid var(--cinza-borda);border-radius:8px;padding:16px;grid-column:span 2">
+          <p style="font-size:13px;font-weight:700;color:var(--cinza-texto);margin-bottom:4px">📄 FCES Fichas 20 e 21 — Cadastro de Profissional</p>
+          <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:12px">Uma ficha por profissional vinculado ao estabelecimento</p>
+          <button class="btn btn-secondary" onclick="alert('Fichas 20/21: forneça os PDFs templates para habilitar este botão.')" style="width:100%;justify-content:center">
+            ⬇️ Baixar Fichas 20/21 (por profissional)
+          </button>
+          <p style="font-size:10.5px;color:#E65100;margin-top:6px;text-align:center">⏳ Aguardando PDF templates</p>
+        </div>
       </div>
     </div>
 
@@ -1762,6 +2154,273 @@ function imprimirFicha() {
   window.print();
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// FICHAS 20/21 — FORMULÁRIO DINÂMICO DE PROFISSIONAL
+// ═══════════════════════════════════════════════════════════════
+let contadorProf = 0;
+
+function adicionarProfissionalForm() {
+  contadorProf++;
+  const id = contadorProf;
+  const lista = document.getElementById('profissionais-lista');
+  const div = document.createElement('div');
+  div.id = `prof-card-${id}`;
+  div.style.cssText = 'background:#F9FAFB;border:1.5px solid var(--cinza-borda);border-radius:10px;padding:18px;margin-bottom:14px';
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--teal-light)">
+      <span style="font-size:13px;font-weight:700;color:var(--verde-amazonia)">👤 Profissional ${id}</span>
+      <button type="button" onclick="document.getElementById('prof-card-${id}').remove()" class="btn-del-linha" style="padding:4px 10px;font-size:12px">🗑 Remover</button>
+    </div>
+
+    <p style="font-size:11.5px;font-weight:700;color:var(--cinza-texto);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">34.1 — Dados de Identificação</p>
+    <div class="grid grid-2" style="gap:12px;margin-bottom:14px">
+      <div class="campo col-span-2">
+        <label>34.1.1 — Nome Completo do Profissional <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_nome" placeholder="Nome completo, sem abreviações">
+      </div>
+      <div class="campo">
+        <label>34.1.3 — CPF <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
+      </div>
+      <div class="campo">
+        <label>34.1.5 — Sexo <span class="req">*</span></label>
+        <select id="prof_${id}_sexo">
+          <option value="">Selecione...</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label>34.1.9 — Data de Nascimento <span class="req">*</span></label>
+        <input type="date" id="prof_${id}_dtnasc">
+      </div>
+      <div class="campo">
+        <label>34.1.24 — Nacionalidade</label>
+        <input type="text" id="prof_${id}_nacion" placeholder="Ex: Brasileiro(a)">
+      </div>
+      <div class="campo col-span-2">
+        <label>34.1.7 — Nome da Mãe <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_mae" placeholder="Nome completo, sem abreviações">
+      </div>
+      <div class="campo col-span-2">
+        <label>34.1.8 — Nome do Pai</label>
+        <input type="text" id="prof_${id}_pai" placeholder="Nome completo, sem abreviações">
+      </div>
+      <div class="campo">
+        <label>34.1.20 — Nº Identidade (RG) <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_rg" placeholder="Número do RG">
+      </div>
+      <div class="campo">
+        <label>34.1.21 — UF do RG</label>
+        <select id="prof_${id}_rg_uf">
+          <option value="AM" selected>AM</option>
+          <option value="AC">AC</option><option value="AL">AL</option>
+          <option value="AP">AP</option><option value="BA">BA</option>
+          <option value="CE">CE</option><option value="DF">DF</option>
+          <option value="ES">ES</option><option value="GO">GO</option>
+          <option value="MA">MA</option><option value="MG">MG</option>
+          <option value="MS">MS</option><option value="MT">MT</option>
+          <option value="PA">PA</option><option value="PB">PB</option>
+          <option value="PE">PE</option><option value="PI">PI</option>
+          <option value="PR">PR</option><option value="RJ">RJ</option>
+          <option value="RN">RN</option><option value="RO">RO</option>
+          <option value="RR">RR</option><option value="RS">RS</option>
+          <option value="SC">SC</option><option value="SE">SE</option>
+          <option value="SP">SP</option><option value="TO">TO</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label>34.1.22 — Órgão Emissor RG</label>
+        <input type="text" id="prof_${id}_rg_orgao" placeholder="Ex: SSP">
+      </div>
+      <div class="campo">
+        <label>34.1.23 — Data de Emissão RG</label>
+        <input type="date" id="prof_${id}_rg_data">
+      </div>
+    </div>
+
+    <p style="font-size:11.5px;font-weight:700;color:var(--cinza-texto);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">34.2 — Dados Residenciais</p>
+    <div class="grid grid-2" style="gap:12px;margin-bottom:14px">
+      <div class="campo">
+        <label>34.2.1 — Tipo de Logradouro</label>
+        <select id="prof_${id}_tp_logr">
+          <option value="">Selecione...</option>
+          <option value="RUA">Rua</option><option value="AV">Avenida</option>
+          <option value="TRAV">Travessa</option><option value="EST">Estrada</option>
+          <option value="ROD">Rodovia</option><option value="OUTRO">Outro</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label>34.2.9 — CEP</label>
+        <input type="text" id="prof_${id}_cep" placeholder="69000-000" maxlength="9" oninput="mascaraCEP(this)">
+      </div>
+      <div class="campo col-span-2">
+        <label>34.2.2 — Logradouro <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_logr" placeholder="Nome completo, sem abreviações">
+      </div>
+      <div class="campo">
+        <label>34.2.3 — Número</label>
+        <input type="text" id="prof_${id}_num" placeholder="Nº ou S/N">
+      </div>
+      <div class="campo">
+        <label>34.2.4 — Complemento</label>
+        <input type="text" id="prof_${id}_compl" placeholder="Apto, Bloco...">
+      </div>
+      <div class="campo">
+        <label>34.2.5 — Bairro/Distrito <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_bairro" placeholder="Nome completo do bairro">
+      </div>
+      <div class="campo">
+        <label>34.2.6 — Município de Residência <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_mun" value="Manaus">
+      </div>
+    </div>
+
+    <p style="font-size:11.5px;font-weight:700;color:var(--cinza-texto);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">34.4 — Vínculos com o Estabelecimento</p>
+    <div class="grid grid-2" style="gap:12px">
+      <div class="campo">
+        <label>34.4.1 — Registro no Conselho de Classe <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_conselho" placeholder="Somente o número (Ex: 12345)">
+      </div>
+      <div class="campo">
+        <label>34.4.2 — Órgão Emissor (Conselho) <span class="req">*</span></label>
+        <select id="prof_${id}_conselho_orgao">
+          <option value="">Selecione...</option>
+          <option value="71">71 — CRM (Medicina)</option>
+          <option value="75">75 — CRO (Odontologia)</option>
+          <option value="77">77 — CRP (Psicologia)</option>
+          <option value="70">70 — CREFITO (Fisioterapia/T.Ocupacional)</option>
+          <option value="74">74 — CRN (Nutrição)</option>
+          <option value="66">66 — COREN (Enfermagem)</option>
+          <option value="69">69 — CRF (Farmácia)</option>
+          <option value="62">62 — CRESS (Serviço Social)</option>
+          <option value="81">81 — Outros Emissores</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label>34.4.3 — Atende SUS neste estabelecimento?</label>
+        <div class="opcoes" style="margin-top:4px">
+          <label class="opcao"><input type="radio" name="prof_${id}_sus" value="S" checked> Sim</label>
+          <label class="opcao"><input type="radio" name="prof_${id}_sus" value="N"> Não</label>
+        </div>
+      </div>
+      <div class="campo">
+        <label>34.4.4 — Vínculo <span class="req">*</span></label>
+        <select id="prof_${id}_vinculo">
+          <option value="">Selecione...</option>
+          <option value="01">01 — Estatutário Efetivo</option>
+          <option value="02">02 — Empregado Público Celetista</option>
+          <option value="03">03 — Contratado Temporário</option>
+          <option value="05">05 — Celetista (CLT)</option>
+          <option value="06">06 — Autônomo / Prestador</option>
+          <option value="09">09 — Informal</option>
+        </select>
+      </div>
+      <div class="campo col-span-2">
+        <label>34.4.5 — CBO — Classificação Brasileira de Ocupações <span class="req">*</span></label>
+        <input type="text" id="prof_${id}_cbo" placeholder="Código e descrição — Ex: 225125 — Médico Clínico">
+      </div>
+      <div class="campo">
+        <label>CH Ambulatorial (horas/sem.)</label>
+        <input type="number" id="prof_${id}_ch_amb" min="0" max="168" placeholder="Ex: 20">
+      </div>
+      <div class="campo">
+        <label>CH Hospitalar (horas/sem.)</label>
+        <input type="number" id="prof_${id}_ch_hosp" min="0" max="168" placeholder="Ex: 0">
+      </div>
+      <div class="campo">
+        <label>CH Outros (horas/sem.)</label>
+        <input type="number" id="prof_${id}_ch_outros" min="0" max="168" placeholder="Ex: 0">
+      </div>
+      <div class="campo">
+        <label>34.4.7 — Data de Entrada <span class="req">*</span></label>
+        <input type="date" id="prof_${id}_dt_entrada">
+      </div>
+    </div>
+  `;
+  lista.appendChild(div);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// VALIDAÇÃO OBRIGATÓRIA DOS CAMPOS — FCES FICHA 01
+// ═══════════════════════════════════════════════════════════════
+const CAMPOS_OBRIGATORIOS = [
+  // [id/name, rótulo, tipo]
+  { id: 'dados_operacionais', label: '1 — Tipo de Operação',       tipo: 'radio'  },
+  { id: 'tipo_pessoa',        label: '2.2 — Tipo de Pessoa',        tipo: 'radio'  },
+  { id: 'tipo_estabelecimento', label: '2.6 — Tipo de Estabelecimento', tipo: 'select' },
+  { id: 'razao_social',       label: '2.7 — Razão Social',          tipo: 'text'   },
+  { id: 'logradouro',         label: '2.9 — Logradouro',            tipo: 'text'   },
+  { id: 'numero_end',         label: '2.10 — Número',               tipo: 'text'   },
+  { id: 'bairro',             label: '2.12 — Bairro',               tipo: 'text'   },
+  { id: 'municipio',          label: '2.14 — Município',            tipo: 'text'   },
+  { id: 'cep',                label: '2.16 — CEP',                  tipo: 'text'   },
+  { id: 'telefone1',          label: '2.21 — Telefone',             tipo: 'text'   },
+  { id: 'email',              label: '2.23 — E-mail',               tipo: 'text'   },
+  { id: 'diretor_clinico',    label: '2.24 — Diretor/Gerente',      tipo: 'text'   },
+  { id: 'alvara_num',         label: '3.1.1 — Nº do Alvará',        tipo: 'text'   },
+  { id: 'alvara_data',        label: '3.1.2 — Data de Expedição',   tipo: 'text'   },
+  { id: 'orgao_expedidor',    label: '3.1.3 — Órgão Expedidor',     tipo: 'radio'  },
+  { id: 'esfera_adm',         label: '5.1 — Esfera Administrativa', tipo: 'select' },
+  { id: 'natureza_juridica',  label: '5.2 — Natureza da Organização', tipo: 'select' },
+  { id: 'retencao_tributos',  label: '5.3 — Retenção de Tributos',  tipo: 'select' },
+  { id: 'atividade_ensino',   label: '5.4 — Atividade de Ensino/Pesquisa', tipo: 'select' },
+  { id: 'nivel_hierarquia',   label: '5.6 — Nível de Hierarquia',   tipo: 'select' },
+  { id: 'fluxo_clientela',    label: '5.7 — Fluxo de Clientela',    tipo: 'select' },
+  { id: 'turno_atendimento',  label: '5.8 — Turno de Atendimento',  tipo: 'select' },
+];
+
+function validarCampos() {
+  const pendentes = [];
+  const ok = [];
+
+  CAMPOS_OBRIGATORIOS.forEach(c => {
+    let valor = '';
+    if (c.tipo === 'radio') {
+      const el = document.querySelector(`input[name="${c.id}"]:checked`);
+      valor = el ? el.value : '';
+    } else {
+      const el = document.getElementById(c.id);
+      valor = el ? el.value.trim() : '';
+    }
+    if (!valor) pendentes.push(c);
+    else ok.push(c);
+  });
+
+  // Validar CNPJ/CPF
+  const tp = document.querySelector('input[name="tipo_pessoa"]:checked');
+  const docId = tp && tp.value === 'fisica' ? 'cpf' : 'cnpj';
+  const docEl = document.getElementById(docId);
+  if (!docEl || !docEl.value.trim()) {
+    pendentes.push({ label: '2.3 — CNPJ/CPF do Estabelecimento' });
+  }
+
+  const resultado = document.getElementById('validacao-resultado');
+  if (pendentes.length === 0) {
+    resultado.innerHTML = `
+      <div class="alerta alerta-ok" style="margin:0">
+        <span>✅</span>
+        <span><strong>Todos os ${ok.length} campos obrigatórios estão preenchidos!</strong>
+        O formulário está pronto para geração das fichas.</span>
+      </div>`;
+  } else {
+    const lista = pendentes.map(c =>
+      `<li style="padding:3px 0;color:var(--erro)">❌ ${c.label}</li>`
+    ).join('');
+    const listaOk = ok.length > 0
+      ? `<p style="font-size:12px;color:var(--ok);margin-top:12px">✅ ${ok.length} campo(s) corretos.</p>`
+      : '';
+    resultado.innerHTML = `
+      <div class="alerta alerta-aviso" style="margin:0 0 12px">
+        <span>⚠️</span>
+        <span><strong>${pendentes.length} campo(s) obrigatório(s) pendente(s):</strong></span>
+      </div>
+      <ul style="list-style:none;font-size:12.5px;padding:0">${lista}</ul>
+      ${listaOk}`;
+  }
+}
+
 function novoPreenchimento() {
   if (confirm('Isso irá limpar todos os dados preenchidos. Deseja continuar?')) {
     location.reload();
@@ -1918,7 +2577,9 @@ async function baixarFichaOficial() {
 
     // 3.2 Dados Bancários
     txt(v('banco_codigo'),   48, 226, 8,  55);
+    txt(v('banco_nome'),    105, 226, 8,  92);
     txt(v('agencia_codigo'),211, 226, 8,  55);
+    txt(v('agencia_nome'),  268, 226, 8, 125);
     txt(v('conta_corrente'),407, 226, 8, 150);
 
     // 3.3 Representante Legal

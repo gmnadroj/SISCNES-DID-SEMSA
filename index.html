@@ -202,6 +202,16 @@
     display: flex; align-items: center; gap: 4px;
   }
   .campo label .req { color: var(--laranja); font-size: 13px; }
+
+  /* Alinhamento vertical dos campos em formulários densos:
+     rótulos de 1 e 2 linhas passam a terminar na mesma base,
+     de modo que todos os inputs de uma mesma linha iniciem no mesmo ponto. */
+  .grid-align > .campo > label {
+    min-height: 30px;
+    align-items: flex-end;
+    line-height: 1.25;
+  }
+  .grid-align > .campo { align-content: start; }
   .campo label .info-tip {
     cursor: help;
     color: var(--azul-sus);
@@ -615,17 +625,17 @@
     <!-- ── 2. IDENTIFICAÇÃO PRINCIPAL ─────────────────────── -->
     <div class="card">
       <div class="card-title">2 — IDENTIFICAÇÃO PRINCIPAL</div>
-      <div class="grid grid-2">
+      <div class="grid grid-4 grid-align">
 
         <!-- 2.1 CNES -->
-        <div class="campo">
+        <div class="campo col-span-2">
           <label>2.1 — CNES</label>
           <input type="text" id="cnes_existente" placeholder="Nº CNES (preencher somente em alteração/exclusão)" maxlength="7">
           <span class="hint">Deixar em branco para novos cadastros (INCLUSÃO).</span>
         </div>
 
         <!-- 2.5 Situação -->
-        <div class="campo">
+        <div class="campo col-span-2">
           <label>2.5 — Situação <span class="req">*</span></label>
           <div class="opcoes" style="margin-top:4px">
             <label class="opcao"><input type="radio" name="situacao_estab" value="I" checked> Individual</label>
@@ -635,7 +645,7 @@
         </div>
 
         <!-- 2.2 Tipo de Pessoa -->
-        <div class="campo">
+        <div class="campo col-span-2">
           <label>2.2 — Pessoa <span class="req">*</span></label>
           <div class="opcoes" style="margin-top:4px">
             <label class="opcao"><input type="radio" name="tipo_pessoa" value="juridica" checked onchange="toggleTipoPessoa(this)"> Jurídica (CNPJ)</label>
@@ -644,26 +654,26 @@
         </div>
 
         <!-- 2.3 CNPJ/CPF -->
-        <div class="campo" id="campo-cnpj-wrap">
+        <div class="campo col-span-2" id="campo-cnpj-wrap">
           <label>2.3 — CNPJ do Estabelecimento <span class="req">*</span></label>
           <input type="text" id="cnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="mascaraCNPJ(this)" required>
           <span class="msg-erro">CNPJ inválido.</span>
         </div>
-        <div class="campo" id="campo-cpf-wrap" style="display:none">
+        <div class="campo col-span-2" id="campo-cpf-wrap" style="display:none">
           <label>2.3 — CPF do Estabelecimento <span class="req">*</span></label>
           <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)">
           <span class="msg-erro">CPF inválido.</span>
         </div>
 
         <!-- 2.4 CNPJ Mantenedora -->
-        <div class="campo col-span-2">
+        <div class="campo col-span-4">
           <label>2.4 — CNPJ da Mantenedora</label>
           <input type="text" id="cnpj_mantenedora" placeholder="00.000.000/0000-00 — preencher apenas quando situação = Mantido" maxlength="18" oninput="mascaraCNPJ(this)">
           <span class="hint">Preencher somente quando o estabelecimento for dependente de outro (situação: Mantido).</span>
         </div>
 
         <!-- 2.6 Tipo de Estabelecimento -->
-        <div class="campo col-span-2">
+        <div class="campo col-span-3">
           <label>2.6 — Tipo de Estabelecimento / Unidade <span class="req">*</span></label>
           <select id="tipo_estabelecimento" required onchange="toggleIndigena(this)">
             <option value="">Selecione o tipo de estabelecimento...</option>
@@ -690,22 +700,23 @@
         </div>
 
         <!-- 2.6.1 Subtipo -->
-        <div class="campo col-span-2">
-          <label>2.6.1 — Subtipo de Estabelecimento</label>
-          <input type="text" id="subtipo_estabelecimento" placeholder="Código e descrição do subtipo (se aplicável)">
+        <div class="campo">
+          <label>2.6.1 — Subtipo</label>
+          <input type="text" id="subtipo_estabelecimento" placeholder="Código do subtipo">
+          <span class="hint">Se aplicável.</span>
         </div>
 
         <!-- 2.7 Razão Social -->
-        <div class="campo col-span-2">
+        <div class="campo col-span-4">
           <label>2.7 — Razão Social <span class="req">*</span></label>
           <input type="text" id="razao_social" placeholder="Nome completo conforme Alvará de Licença da Prefeitura" required>
         </div>
 
         <!-- 2.8 Nome Fantasia -->
-        <div class="campo col-span-2">
+        <div class="campo col-span-4">
           <label>2.8 — Nome Fantasia</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input type="text" id="nome_fantasia" placeholder="Conforme Alvará de Licença. Se não houver, será igual à Razão Social." style="flex:1">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="nome_fantasia" placeholder="Conforme Alvará de Licença. Se não houver, será igual à Razão Social." style="flex:1 1 240px;min-width:0">
             <button type="button" onclick="replicarRazaoSocial()" style="padding:9px 14px;background:var(--verde-claro);border:1.5px solid var(--teal);border-radius:6px;font-size:12px;font-weight:600;color:var(--verde-escuro);cursor:pointer;white-space:nowrap">↩ Usar Razão Social</button>
           </div>
           <span class="hint">
@@ -714,36 +725,143 @@
           </span>
         </div>
 
-        <!-- 3.2 Dados Bancários (campo de Ident. Principal) -->
-        <div class="campo col-span-2" style="margin-top:8px">
-          <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);padding-bottom:6px;border-bottom:1px solid var(--teal-light);margin-bottom:12px;">3.2 — Dados Bancários</p>
-          <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:10px;">Preencher somente quando o estabelecimento privado for contratado pelo SUS.</p>
-          <div class="grid grid-3">
-            <div class="campo">
-              <label>3.2.1 — Banco — Código</label>
-              <input type="text" id="banco_codigo" placeholder="Ex: 237">
-            </div>
-            <div class="campo">
-              <label>3.2.1 — Banco — Nome</label>
-              <input type="text" id="banco_nome" placeholder="Ex: Bradesco">
-            </div>
-            <div class="campo">
-              <label>3.2.2 — Agência — Código</label>
-              <input type="text" id="agencia_codigo" placeholder="Ex: 1234-5">
-            </div>
-            <div class="campo">
-              <label>3.2.2 — Agência — Nome</label>
-              <input type="text" id="agencia_nome" placeholder="Ex: Agência Centro Manaus">
-            </div>
-            <div class="campo">
-              <label>3.2.3 — Conta Corrente</label>
-              <input type="text" id="conta_corrente" placeholder="Número da conta corrente">
-            </div>
-          </div>
+        <!-- 2.9 Logradouro -->
+        <div class="campo col-span-3">
+          <label>2.9 — Logradouro <span class="req">*</span></label>
+          <input type="text" id="logradouro" placeholder="Nome completo da rua, avenida, travessa, rodovia (sem abreviações)" required>
+        </div>
+
+        <!-- 2.10 Número -->
+        <div class="campo">
+          <label>2.10 — Número <span class="req">*</span></label>
+          <input type="text" id="numero_end" placeholder="Nº ou S/N" required>
+        </div>
+
+        <!-- 2.11 Complemento -->
+        <div class="campo col-span-2">
+          <label>2.11 — Complemento</label>
+          <input type="text" id="complemento" placeholder="Sala, Conjunto, Bloco, Andar...">
+        </div>
+
+        <!-- 2.12 Bairro -->
+        <div class="campo col-span-2">
+          <label>2.12 — Bairro <span class="req">*</span></label>
+          <input type="text" id="bairro" placeholder="Nome completo do bairro (sem abreviações)" required>
+        </div>
+
+        <!-- 2.13 Código IBGE -->
+        <div class="campo">
+          <label>2.13 — Código IBGE <span class="req">*</span></label>
+          <input type="text" id="cod_ibge" value="1302603" maxlength="7" required>
+          <span class="hint">Manaus: 1302603</span>
+        </div>
+
+        <!-- 2.14 Município -->
+        <div class="campo col-span-2">
+          <label>2.14 — Nome do Município <span class="req">*</span></label>
+          <input type="text" id="municipio" value="Manaus" required>
+        </div>
+
+        <!-- 2.15 UF -->
+        <div class="campo">
+          <label>2.15 — UF <span class="req">*</span></label>
+          <select id="uf" required>
+            <option value="AM" selected>AM</option>
+            <option value="AC">AC</option><option value="AL">AL</option>
+            <option value="AP">AP</option><option value="BA">BA</option>
+            <option value="CE">CE</option><option value="DF">DF</option>
+            <option value="ES">ES</option><option value="GO">GO</option>
+            <option value="MA">MA</option><option value="MG">MG</option>
+            <option value="MS">MS</option><option value="MT">MT</option>
+            <option value="PA">PA</option><option value="PB">PB</option>
+            <option value="PE">PE</option><option value="PI">PI</option>
+            <option value="PR">PR</option><option value="RJ">RJ</option>
+            <option value="RN">RN</option><option value="RO">RO</option>
+            <option value="RR">RR</option><option value="RS">RS</option>
+            <option value="SC">SC</option><option value="SE">SE</option>
+            <option value="SP">SP</option><option value="TO">TO</option>
+          </select>
+        </div>
+
+        <!-- 2.16 CEP -->
+        <div class="campo">
+          <label>2.16 — CEP <span class="req">*</span></label>
+          <input type="text" id="cep" placeholder="69000-000" maxlength="9" oninput="mascaraCEP(this)" onblur="buscarCEP()" required>
+          <span class="hint">CEPs de Manaus iniciam com 69.</span>
+        </div>
+
+        <!-- 2.17 Região de Saúde -->
+        <div class="campo">
+          <label>2.17 — Região de Saúde</label>
+          <input type="text" id="r_saude" placeholder="Código">
+        </div>
+
+        <!-- 2.18 Microrregião -->
+        <div class="campo">
+          <label>2.18 — Microrregião</label>
+          <input type="text" id="microrregiao" placeholder="Código">
+        </div>
+
+        <!-- 2.19 Distrito Sanitário -->
+        <div class="campo">
+          <label>2.19 — Distrito Sanitário</label>
+          <select id="distrito_sanitario">
+            <option value="">Selecione...</option>
+            <option value="DS-LESTE">Leste</option>
+            <option value="DS-NORTE">Norte</option>
+            <option value="DS-OESTE">Oeste</option>
+            <option value="DS-SUL">Sul</option>
+            <option value="DS-CENTRO-SUL">Centro-Sul</option>
+            <option value="DS-CENTRO-OESTE">Centro-Oeste</option>
+          </select>
+          <span class="hint">Distrito de Manaus onde o estab. está localizado.</span>
+        </div>
+
+        <!-- 2.20 Módulo Assistencial -->
+        <div class="campo col-span-2">
+          <label>2.20 — Módulo Assistencial</label>
+          <input type="text" id="mod_assist" placeholder="Código do módulo assistencial">
+        </div>
+
+        <!-- 2.21 Telefone -->
+        <div class="campo">
+          <label>2.21 — DDD / Telefone <span class="req">*</span></label>
+          <input type="text" id="telefone1" placeholder="(92) 99999-9999" maxlength="15" oninput="mascaraTel(this)" required>
+        </div>
+
+        <!-- 2.22 Fax -->
+        <div class="campo">
+          <label>2.22 — DDD / Fax</label>
+          <input type="text" id="fax" placeholder="(92) 3333-3333" maxlength="14" oninput="mascaraTel(this)">
+        </div>
+
+        <!-- 2.23 E-mail -->
+        <div class="campo col-span-2">
+          <label>2.23 — E-mail (institucional preferencialmente) <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="contato@estabelecimento.com.br" required>
+        </div>
+
+        <!-- 2.24 Diretor Clínico -->
+        <div class="campo col-span-2">
+          <label>2.24 — Diretor Clínico ou Gerente / Administrador <span class="req">*</span></label>
+          <input type="text" id="diretor_clinico" placeholder="Nome completo do responsável pelo estabelecimento" required>
+          <span class="hint">Hospitais: Diretor Clínico. Demais: Gerente ou Administrador. O profissional deve constar também na Ficha de Profissional com CBO de diretor/gerente.</span>
+        </div>
+
+        <!-- 2.25 Registro no Conselho -->
+        <div class="campo col-span-2">
+          <label>2.25 — Registro no Conselho de Classe</label>
+          <input type="text" id="registro_conselho" placeholder="Ex: CRM/AM 12345">
+        </div>
+
+        <!-- 2.25 URL / Site -->
+        <div class="campo col-span-2">
+          <label>2.25 — URL / Site</label>
+          <input type="url" id="site" placeholder="https://www.site.com.br">
         </div>
 
         <!-- 3.3 Representante Legal (campo de Ident. Principal) -->
-        <div class="campo col-span-2" style="margin-top:8px">
+        <div class="campo col-span-4" style="margin-top:8px">
           <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);padding-bottom:6px;border-bottom:1px solid var(--teal-light);margin-bottom:12px;">3.3 — Representante Legal</p>
           <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:10px;">Preencher somente para instituições filantrópicas sem fins lucrativos.</p>
           <div class="grid grid-2">
@@ -767,7 +885,7 @@
         </div>
 
         <!-- 3.4 Mapeamento Indígena (campo de Ident. Principal — somente tipo 72) -->
-        <div class="campo col-span-2" id="secao-indigena" style="display:none;margin-top:8px">
+        <div class="campo col-span-4" id="secao-indigena" style="display:none;margin-top:8px">
           <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);padding-bottom:6px;border-bottom:1px solid var(--teal-light);margin-bottom:10px;">3.4 — Mapeamento Indígena</p>
           <div class="alerta alerta-aviso" style="margin-bottom:10px">
             <span>⚠️</span>
@@ -792,123 +910,6 @@
       </div>
     </div>
 
-    <!-- ── ENDEREÇO (2.9 a 2.16) ──────────────────────────── -->
-    <div class="card">
-      <div class="card-title">📍 Endereço — campos 2.9 a 2.16</div>
-      <div class="grid grid-4">
-
-        <div class="campo col-span-3">
-          <label>2.9 — Logradouro <span class="req">*</span></label>
-          <input type="text" id="logradouro" placeholder="Nome completo da rua, avenida, travessa, rodovia (sem abreviações)" required>
-        </div>
-        <div class="campo">
-          <label>2.10 — Número <span class="req">*</span></label>
-          <input type="text" id="numero_end" placeholder="Nº ou S/N" required>
-        </div>
-        <div class="campo col-span-2">
-          <label>2.11 — Complemento</label>
-          <input type="text" id="complemento" placeholder="Sala, Conjunto, Bloco, Andar...">
-        </div>
-        <div class="campo col-span-2">
-          <label>2.12 — Bairro <span class="req">*</span></label>
-          <input type="text" id="bairro" placeholder="Nome completo do bairro (sem abreviações)" required>
-        </div>
-        <div class="campo">
-          <label>2.13 — Código IBGE <span class="req">*</span></label>
-          <input type="text" id="cod_ibge" value="1302603" maxlength="7" required>
-          <span class="hint">Manaus: 1302603</span>
-        </div>
-        <div class="campo col-span-2">
-          <label>2.14 — Nome do Município <span class="req">*</span></label>
-          <input type="text" id="municipio" value="Manaus" required>
-        </div>
-        <div class="campo">
-          <label>2.15 — UF <span class="req">*</span></label>
-          <select id="uf" required>
-            <option value="AM" selected>AM</option>
-            <option value="AC">AC</option><option value="AL">AL</option>
-            <option value="AP">AP</option><option value="BA">BA</option>
-            <option value="CE">CE</option><option value="DF">DF</option>
-            <option value="ES">ES</option><option value="GO">GO</option>
-            <option value="MA">MA</option><option value="MG">MG</option>
-            <option value="MS">MS</option><option value="MT">MT</option>
-            <option value="PA">PA</option><option value="PB">PB</option>
-            <option value="PE">PE</option><option value="PI">PI</option>
-            <option value="PR">PR</option><option value="RJ">RJ</option>
-            <option value="RN">RN</option><option value="RO">RO</option>
-            <option value="RR">RR</option><option value="RS">RS</option>
-            <option value="SC">SC</option><option value="SE">SE</option>
-            <option value="SP">SP</option><option value="TO">TO</option>
-          </select>
-        </div>
-        <div class="campo col-span-2">
-          <label>2.16 — CEP <span class="req">*</span></label>
-          <input type="text" id="cep" placeholder="69000-000" maxlength="9" oninput="mascaraCEP(this)" onblur="buscarCEP()" required>
-          <span class="hint">CEPs de Manaus iniciam com 69. Digite para preenchimento automático.</span>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ── CONTATO E REGIONAL (2.17 a 2.25) ──────────────── -->
-    <div class="card">
-      <div class="card-title">📞 Contato e Dados Regionais — campos 2.17 a 2.25</div>
-      <div class="grid grid-4">
-
-        <div class="campo">
-          <label>2.17 — Região de Saúde</label>
-          <input type="text" id="r_saude" placeholder="Código da região de saúde">
-        </div>
-        <div class="campo">
-          <label>2.18 — Microrregião</label>
-          <input type="text" id="microrregiao" placeholder="Código da microrregião">
-        </div>
-        <div class="campo">
-          <label>2.19 — Distrito Sanitário</label>
-          <select id="distrito_sanitario">
-            <option value="">Selecione...</option>
-            <option value="DS-LESTE">Leste</option>
-            <option value="DS-NORTE">Norte</option>
-            <option value="DS-OESTE">Oeste</option>
-            <option value="DS-SUL">Sul</option>
-            <option value="DS-CENTRO-SUL">Centro-Sul</option>
-            <option value="DS-CENTRO-OESTE">Centro-Oeste</option>
-          </select>
-          <span class="hint">Distrito Sanitário de Manaus onde o estab. está localizado.</span>
-        </div>
-        <div class="campo">
-          <label>2.20 — Módulo Assistencial</label>
-          <input type="text" id="mod_assist" placeholder="Código do módulo assistencial">
-        </div>
-        <div class="campo col-span-2">
-          <label>2.21 — DDD / Telefone <span class="req">*</span></label>
-          <input type="text" id="telefone1" placeholder="(92) 99999-9999" maxlength="15" oninput="mascaraTel(this)" required>
-        </div>
-        <div class="campo col-span-2">
-          <label>2.22 — DDD / Fax</label>
-          <input type="text" id="fax" placeholder="(92) 3333-3333" maxlength="14" oninput="mascaraTel(this)">
-        </div>
-        <div class="campo col-span-4">
-          <label>2.23 — E-mail (institucional preferencialmente) <span class="req">*</span></label>
-          <input type="email" id="email" placeholder="contato@estabelecimento.com.br" required>
-        </div>
-        <div class="campo col-span-2">
-          <label>2.24 — Diretor Clínico ou Gerente / Administrador <span class="req">*</span></label>
-          <input type="text" id="diretor_clinico" placeholder="Nome completo do responsável pelo estabelecimento" required>
-          <span class="hint">Hospitais: Diretor Clínico. Demais: Gerente ou Administrador. O profissional deve constar também na Ficha de Profissional com CBO de diretor/gerente.</span>
-        </div>
-        <div class="campo">
-          <label>2.25 — Registro no Conselho de Classe</label>
-          <input type="text" id="registro_conselho" placeholder="Ex: CRM/AM 12345">
-        </div>
-        <div class="campo">
-          <label>2.25 — URL / Site</label>
-          <input type="url" id="site" placeholder="https://www.site.com.br">
-        </div>
-
-      </div>
-    </div>
-
     <!-- ── 3. IDENTIFICAÇÃO COMPLEMENTAR — somente Vigilância Sanitária ── -->
     <div class="card">
       <div class="card-title">3 — IDENTIFICAÇÃO COMPLEMENTAR</div>
@@ -921,7 +922,7 @@
       <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
         3.1 — Vigilância Sanitária
       </p>
-      <div class="grid grid-3">
+      <div class="grid grid-3 grid-align">
         <div class="campo">
           <label>3.1.1 — Nº do Alvará <span class="req">*</span></label>
           <input type="text" id="alvara_num" placeholder="Ex: 1234/2025" required>
@@ -937,6 +938,32 @@
             <label class="opcao"><input type="radio" name="orgao_expedidor" value="SMS" checked> SMS ✓</label>
           </div>
           <span class="hint">Para Manaus: sempre marcar <strong>SMS</strong>.</span>
+        </div>
+      </div>
+      <p style="font-size:13px;font-weight:700;color:var(--verde-amazonia);margin-top:20px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--teal-light);">
+        3.2 — Dados Bancários
+      </p>
+      <p style="font-size:11.5px;color:var(--cinza-texto);margin-bottom:10px;">Preencher somente quando o estabelecimento privado for contratado pelo SUS.</p>
+      <div class="grid grid-3 grid-align">
+        <div class="campo">
+          <label>3.2.1 — Banco — Código</label>
+          <input type="text" id="banco_codigo" placeholder="Ex: 237">
+        </div>
+        <div class="campo col-span-2">
+          <label>3.2.1 — Banco — Nome</label>
+          <input type="text" id="banco_nome" placeholder="Ex: Bradesco">
+        </div>
+        <div class="campo">
+          <label>3.2.2 — Agência — Código</label>
+          <input type="text" id="agencia_codigo" placeholder="Ex: 1234-5">
+        </div>
+        <div class="campo col-span-2">
+          <label>3.2.2 — Agência — Nome</label>
+          <input type="text" id="agencia_nome" placeholder="Ex: Agência Centro Manaus">
+        </div>
+        <div class="campo col-span-3">
+          <label>3.2.3 — Conta Corrente</label>
+          <input type="text" id="conta_corrente" placeholder="Número da conta corrente">
         </div>
       </div>
     </div>
@@ -991,8 +1018,12 @@
       </div>
     </div>
 
+    <!-- Resultado da validação dos campos obrigatórios -->
+    <div id="validacao-resultado" style="margin-bottom:16px"></div>
+
     <div class="nav-buttons">
       <span></span>
+      <button class="btn" onclick="validarCampos()" title="Confere os 22 campos obrigatórios das Fichas 01 e 02 antes de gerar o PDF" style="background:var(--verde-claro);border:1.5px solid var(--teal);color:var(--verde-escuro)">✓ Validar obrigatórios</button>
       <button id="btn-baixar-ficha" class="btn btn-print" onclick="baixarFichaOficial()" title="FCES Ficha 01 oficial com dados preenchidos">📄 Ficha 01</button>
       <button class="btn btn-primary" onclick="proximaFicha(0)">Próximo →</button>
     </div>
@@ -1029,12 +1060,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -1401,12 +1432,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -1551,12 +1582,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -1700,12 +1731,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -1774,12 +1805,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -1878,12 +1909,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -2201,12 +2232,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -2364,12 +2395,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -2589,12 +2620,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -2807,12 +2838,12 @@
       <div class="grid grid-2">
         <div class="campo">
           <label>2.1 — CNES</label>
-          <input type="text" id="cnes_existente" placeholder="Nº CNES (alteração/exclusão)" maxlength="7" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-cnes" placeholder="Preenchido automaticamente da Ficha 01" maxlength="7" readonly style="background:#F5F5F5">
           <span class="hint">Preenchido automaticamente da Ficha 01.</span>
         </div>
         <div class="campo">
           <label>2.8 — Nome Fantasia do Estabelecimento</label>
-          <input type="text" id="nome_fantasia_ref" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
+          <input type="text" class="ref-nome-fantasia" placeholder="Preenchido automaticamente da Ficha 01" readonly style="background:#F5F5F5">
         </div>
       </div>
     </div>
@@ -2979,7 +3010,7 @@ function irParaFicha(idx) {
     else if (i < idx) t.classList.add('done');
   });
   fichaAtual = idx;
-  if (idx === 5) gerarResumo();
+  gerarResumo();
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -3009,10 +3040,20 @@ function toggleIndigena(el) {
 function syncIdent() {
   const cnes = document.getElementById('cnes_existente');
   const nf   = document.getElementById('nome_fantasia');
-  document.querySelectorAll('#nome_fantasia_ref').forEach(el => {
-    el.value = nf ? (nf.value || '') : '';
-  });
+  const vCnes = cnes ? (cnes.value || '') : '';
+  const vNf   = nf   ? (nf.value   || '') : '';
+  document.querySelectorAll('.ref-cnes').forEach(el => { el.value = vCnes; });
+  document.querySelectorAll('.ref-nome-fantasia').forEach(el => { el.value = vNf; });
 }
+
+// Replica CNES e Nome Fantasia da Ficha 01 nos campos de referência das demais fichas
+document.addEventListener('DOMContentLoaded', () => {
+  ['cnes_existente', 'nome_fantasia'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', syncIdent);
+  });
+  syncIdent();
+});
 // Adicionar linha de serviço especializado (Ficha 08)
 let contadorSrvEsp = 1;
 function adicionarServEsp() {
@@ -3054,6 +3095,7 @@ function replicarRazaoSocial() {
   const rs = document.getElementById('razao_social').value.trim();
   if (!rs) { alert('Preencha primeiro o campo 2.7 — Razão Social.'); return; }
   document.getElementById('nome_fantasia').value = rs;
+  syncIdent();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3252,6 +3294,7 @@ const servicosOutros = [
 
 function criarServicosGrid(lista, containerId) {
   const c = document.getElementById(containerId);
+  if (!c) return;   // seção não montada nesta versão
   lista.forEach(srv => {
     const id = 'srv_' + srv.replace(/\W/g,'_');
     const lbl = document.createElement('label');
@@ -3280,6 +3323,7 @@ const listaEquipamentos = [
 
 function criarEquipamentos() {
   const wrap = document.getElementById('equipamentos-wrap');
+  if (!wrap) return;   // seção não montada nesta versão
   const hdr = document.createElement('div');
   hdr.className = 'equip-header equip-row';
   hdr.innerHTML = `<span>Equipamento</span><span>Qtd.</span><span>Classificação</span><span>Situação</span><span></span>`;
@@ -3317,6 +3361,7 @@ function radioVal(name) {
 
 function gerarResumo() {
   const resumo = document.getElementById('resumo-conteudo');
+  if (!resumo) return;   // tela de resumo não montada nesta versão
   const srvSelecionados = [...document.querySelectorAll('.servico-item input:checked')].map(i=>i.value);
 
   const opOper = radioVal('dados_operacionais');
@@ -3652,6 +3697,7 @@ function validarCampos() {
   }
 
   const resultado = document.getElementById('validacao-resultado');
+  if (!resultado) return pendentes.length === 0;
   if (pendentes.length === 0) {
     resultado.innerHTML = `
       <div class="alerta alerta-ok" style="margin:0">

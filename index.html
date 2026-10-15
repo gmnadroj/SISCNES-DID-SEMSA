@@ -576,10 +576,88 @@
     background: var(--govbr-azul);
     color: white;
     border-radius: var(--radius);
-    padding: 26px 28px 28px;
+    padding: 46px 32px 48px;
     margin-bottom: 18px;
     box-shadow: var(--sombra);
+    text-align: center;
   }
+  .triagem-capa h2 {
+    font-family: 'Raleway', sans-serif;
+    font-size: 36px; font-weight: 800;
+    letter-spacing: -.6px; line-height: 1.15;
+    color: #fff;
+  }
+  /* filete de destaque entre o título e o texto de apoio */
+  .triagem-capa h2::after {
+    content: ''; display: block;
+    width: 72px; height: 3px; border-radius: 2px;
+    background: var(--govbr-ciano);
+    margin: 20px auto 0;
+  }
+  .triagem-capa p {
+    font-size: 14px; line-height: 1.7;
+    color: rgba(255,255,255,.85);
+    max-width: 68ch; margin: 22px auto 0;
+  }
+  .triagem-capa p strong { color: #fff; }
+
+  /* ── Questionário sobre o azul institucional ──────────────── */
+  #tela-triagem .card {
+    background: var(--govbr-azul);
+    color: #fff;
+    box-shadow: var(--sombra);
+  }
+  #tela-triagem .card > .card-title {
+    justify-content: center; text-align: center;
+    color: #fff;
+    border-bottom-color: rgba(255,255,255,.22);
+  }
+  #tela-triagem .pergunta { border-bottom-color: rgba(255,255,255,.14); }
+  #tela-triagem .pergunta > .enunciado { color: #fff; }
+  #tela-triagem .pergunta > .enunciado .n {
+    background: #fff; color: var(--govbr-azul);
+  }
+  #tela-triagem .req  { color: #FFB74D; }
+  #tela-triagem .hint { color: rgba(255,255,255,.62); }
+
+  /* caixas de seleção e campos: fundo branco, texto no mesmo azul */
+  #tela-triagem .opcao {
+    background: #fff; color: var(--govbr-azul);
+    border-color: #fff; font-weight: 600;
+  }
+  #tela-triagem .opcao:hover { background: #E8F0FB; border-color: #fff; }
+  #tela-triagem .opcao:has(input:checked) {
+    background: #fff; color: var(--govbr-azul);
+    border-color: var(--govbr-ciano);
+    box-shadow: 0 0 0 3px rgba(25,180,199,.45);
+  }
+  #tela-triagem .resposta input,
+  #tela-triagem .resposta textarea {
+    background: #fff; color: var(--govbr-azul);
+    border-color: #fff; font-weight: 500;
+  }
+  #tela-triagem .resposta input::placeholder,
+  #tela-triagem .resposta textarea::placeholder { color: #7D8DA6; font-weight: 400; }
+  #tela-triagem .resposta input:focus,
+  #tela-triagem .resposta textarea:focus {
+    border-color: var(--govbr-ciano);
+    box-shadow: 0 0 0 3px rgba(25,180,199,.35);
+  }
+  #tela-triagem .pergunta.pendente > .enunciado { color: #FF8A80; }
+  #tela-triagem .pergunta.pendente .opcao,
+  #tela-triagem .pergunta.pendente input,
+  #tela-triagem .pergunta.pendente textarea { border-color: var(--erro); }
+
+  #tela-triagem .card .nav-buttons { border-top-color: rgba(255,255,255,.18); }
+  #tela-triagem .card .btn-primary {
+    background: #fff; color: var(--govbr-azul);
+    box-shadow: 0 3px 12px rgba(0,0,0,.28);
+  }
+  #tela-triagem .card .btn-primary:hover {
+    background: #EAF2FF;
+    box-shadow: 0 5px 18px rgba(0,0,0,.34);
+  }
+
   .pergunta {
     padding: 16px 0;
     border-bottom: 1px solid var(--cinza-borda);
@@ -686,7 +764,11 @@
     }
     .abas-vert .step-tab.active { border-left: none; border-bottom-color: var(--govbr-ciano); }
     .abas-vert .step-tab.done::after { content: none; }
-    .triagem-capa h2 { font-size: 21px; }
+    .triagem-capa { padding: 30px 20px 32px; }
+    .triagem-capa h2 { font-size: 25px; }
+    .triagem-capa h2::after { margin-top: 16px; }
+    .triagem-capa p { font-size: 13.5px; margin-top: 18px; }
+    #tela-triagem .card { padding: 20px 16px; }
     .main-wrap { margin: 14px auto; padding: 0 10px 50px; }
     .card { padding: 16px; }
     .btn { padding: 10px 16px; font-size: 13px; }
@@ -4461,6 +4543,9 @@ function _limparErroDoCampo(ev) {
   el.classList.remove('input-erro');
   const campo = el.closest('.campo');
   if (campo) campo.classList.remove('campo-erro');
+  // na triagem, o destaque da pergunta some assim que ela é respondida
+  const perg = el.closest('.pergunta');
+  if (perg && String(el.value || '').trim()) perg.classList.remove('pendente');
 }
 
 

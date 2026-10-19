@@ -13,6 +13,7 @@
     --govbr-azul-med:  #0C2B5E;   /* variação para hover/realce */
     --govbr-azul-vivo: #1351B4;   /* azul de ação */
     --govbr-ciano:     #19B4C7;   /* destaque da barra ativa */
+    --verde-musgo:     #606C38;   /* seleção das perguntas 1 e 2 */
 
     --verde-amazonia: #00695C;
     --verde-escuro:   #004D40;
@@ -572,41 +573,62 @@
   .painel-fichas { flex: 1 1 auto; min-width: 0; }
 
   /* ── TRIAGEM DE ELEGIBILIDADE ─────────────────────────────── */
+  /* a tela de entrada ocupa a altura disponível e dispensa rolagem */
+  body.triagem-ativa .main-wrap { margin: 14px auto; padding: 0 20px 14px; }
+  #tela-triagem {
+    display: flex; align-items: center;
+    min-height: calc(100vh - 115px);
+  }
+  #tela-triagem > .triagem-layout { width: 100%; }
+
+  /* duas colunas; a tela de entrada cabe na viewport sem rolagem */
+  .triagem-layout {
+    display: grid;
+    grid-template-columns: minmax(260px, 330px) 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .triagem-lateral { display: flex; flex-direction: column; gap: 14px; }
+  .triagem-principal { min-width: 0; }
+
   .triagem-capa {
     background: var(--govbr-azul);
     color: white;
     border-radius: var(--radius);
-    padding: 46px 32px 48px;
-    margin-bottom: 18px;
+    padding: 26px 24px 28px;
     box-shadow: var(--sombra);
-    text-align: center;
   }
   .triagem-capa h2 {
     font-family: 'Raleway', sans-serif;
-    font-size: 36px; font-weight: 800;
-    letter-spacing: -.6px; line-height: 1.15;
+    font-size: 27px; font-weight: 800;
+    letter-spacing: -.5px; line-height: 1.18;
     color: #fff;
   }
-  /* filete de destaque entre o título e o texto de apoio */
   .triagem-capa h2::after {
     content: ''; display: block;
-    width: 72px; height: 3px; border-radius: 2px;
+    width: 56px; height: 3px; border-radius: 2px;
     background: var(--govbr-ciano);
-    margin: 20px auto 0;
+    margin: 14px 0 0;
   }
   .triagem-capa p {
-    font-size: 14px; line-height: 1.7;
+    font-size: 13px; line-height: 1.65;
     color: rgba(255,255,255,.85);
-    max-width: 68ch; margin: 22px auto 0;
+    margin: 16px 0 0;
   }
   .triagem-capa p strong { color: #fff; }
+  #tela-triagem .aviso-lgpd { margin-bottom: 0; }
 
   /* ── Questionário sobre o azul institucional ──────────────── */
   #tela-triagem .card {
     background: var(--govbr-azul);
     color: #fff;
     box-shadow: var(--sombra);
+    padding: 20px 26px 22px;
   }
+  #tela-triagem .card > .card-title { margin-bottom: 10px; padding-bottom: 8px; }
+  #tela-triagem .pergunta { padding: 11px 0; }
+  #tela-triagem .pergunta > .enunciado { margin-bottom: 7px; font-size: 13px; }
+  #tela-triagem .card .nav-buttons { margin-top: 14px; padding-top: 14px; }
   #tela-triagem .card > .card-title {
     justify-content: center; text-align: center;
     color: #fff;
@@ -631,11 +653,32 @@
     border-color: var(--govbr-ciano);
     box-shadow: 0 0 0 3px rgba(25,180,199,.45);
   }
+  /* perguntas 1 e 2: a seleção fica em verde musgo */
+  #p-func .opcao:has(input:checked),
+  #p-lic  .opcao:has(input:checked) {
+    background: var(--verde-musgo); color: #fff;
+    border-color: var(--verde-musgo);
+    box-shadow: 0 0 0 3px rgba(96,108,56,.40);
+  }
   #tela-triagem .resposta input,
   #tela-triagem .resposta textarea {
     background: #fff; color: var(--govbr-azul);
     border-color: #fff; font-weight: 500;
   }
+  /* quantidades: caixa curta, número grande e centralizado */
+  #tela-triagem .resposta input[type="number"] {
+    width: 92px; padding: 6px 8px;
+    font-size: 20px; font-weight: 800;
+    text-align: center; letter-spacing: .5px;
+  }
+  #tela-triagem .resposta input[type="number"]::placeholder {
+    font-size: 13px; font-weight: 400; letter-spacing: 0;
+  }
+  /* especialidades: saída em caixa alta e negrito */
+  #tela-triagem #tri_esp {
+    text-transform: uppercase; font-weight: 700; letter-spacing: .3px;
+  }
+  #tela-triagem #tri_esp::placeholder { text-transform: none; font-weight: 400; }
   #tela-triagem .resposta input::placeholder,
   #tela-triagem .resposta textarea::placeholder { color: #7D8DA6; font-weight: 400; }
   #tela-triagem .resposta input:focus,
@@ -700,32 +743,62 @@
   .pergunta.pendente .opcao { border-color: var(--erro); }
   .pergunta.pendente input, .pergunta.pendente textarea { border-color: var(--erro); background: var(--erro-bg); }
 
-  .desfecho { margin-top: 18px; }
+  /* ── Desfecho da triagem (substitui o questionário) ───────── */
   .desfecho .bloco {
-    border-radius: var(--radius); padding: 20px 22px;
-    font-size: 13.5px; line-height: 1.65;
+    background: var(--govbr-azul);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 22px 26px 18px;
+    box-shadow: var(--sombra);
+    border-top: 5px solid var(--erro);
   }
-  .desfecho .bloco.nao {
-    background: var(--erro-bg); color: #8E1515;
-    border-left: 5px solid var(--erro);
+  .desfecho .bloco.sim { border-top-color: var(--verde-musgo); }
+  .selo-status {
+    display: inline-block;
+    background: var(--erro); color: #fff;
+    border-radius: 20px; padding: 5px 16px;
+    font-size: 11.5px; font-weight: 800; letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
   }
-  .desfecho .bloco.sim {
-    background: var(--ok-bg); color: #15501A;
-    border-left: 5px solid var(--ok);
-  }
+  .selo-status.ok { background: var(--verde-musgo); }
   .desfecho .bloco h3 {
-    font-size: 15px; margin-bottom: 10px;
-    display: flex; align-items: center; gap: 8px;
+    font-size: 23px; font-weight: 800;
+    letter-spacing: -.4px; line-height: 1.22;
+    color: #fff; margin-bottom: 9px;
   }
+  .desfecho .resumo {
+    font-size: 15px; font-weight: 600; line-height: 1.5;
+    color: rgba(255,255,255,.9);
+    max-width: 78ch;
+  }
+  .desfecho .resumo strong { color: #fff; font-weight: 800; }
   .desfecho .encaminhamento {
-    margin-top: 14px; padding: 14px 16px;
-    background: rgba(255,255,255,.72);
+    margin-top: 13px; padding: 14px 18px;
+    background: #fff; color: var(--govbr-azul);
     border-radius: var(--radius-sm);
     white-space: pre-line;
-    font-size: 13px; line-height: 1.6;
+    font-size: 14px; font-weight: 600; line-height: 1.55;
   }
-  .desfecho .contatos { margin-top: 10px; font-weight: 700; }
-  .desfecho .contatos a { color: inherit; }
+  .desfecho .encaminhamento strong { font-weight: 800; }
+  .desfecho .encaminhamento.destaque {
+    border-left: 5px solid var(--govbr-ciano);
+    font-weight: 700;
+  }
+  .desfecho .nav-buttons {
+    margin-top: 16px; padding-top: 14px;
+    border-top-color: rgba(255,255,255,.18);
+  }
+  .desfecho .btn-primary {
+    background: #fff; color: var(--govbr-azul);
+    box-shadow: 0 3px 12px rgba(0,0,0,.28);
+  }
+  .desfecho .btn-primary:hover { background: #EAF2FF; }
+  .desfecho .btn-secondary {
+    background: transparent; color: rgba(255,255,255,.85);
+    border-color: rgba(255,255,255,.45);
+  }
+  .desfecho .btn-secondary:hover { color: #fff; border-color: #fff; }
 
   /* ── Campos obrigatórios pendentes ───────────────────────── */
   .painel-validacao:empty { display: none; }
@@ -764,7 +837,13 @@
     }
     .abas-vert .step-tab.active { border-left: none; border-bottom-color: var(--govbr-ciano); }
     .abas-vert .step-tab.done::after { content: none; }
-    .triagem-capa { padding: 30px 20px 32px; }
+    .triagem-layout { grid-template-columns: 1fr; gap: 12px; }
+    #tela-triagem { display: block; min-height: 0; }
+    body.triagem-ativa .main-wrap { padding: 0 10px 24px; }
+    .desfecho .bloco { padding: 18px 16px 16px; }
+    .desfecho .bloco h3 { font-size: 20px; }
+    .desfecho .nav-buttons { flex-direction: column; gap: 10px; align-items: stretch; }
+    .triagem-capa { padding: 22px 18px 24px; }
     .triagem-capa h2 { font-size: 25px; }
     .triagem-capa h2::after { margin-top: 16px; }
     .triagem-capa p { font-size: 13.5px; margin-top: 18px; }
@@ -803,7 +882,7 @@
 
 </style>
 </head>
-<body>
+<body class="triagem-ativa">
 
 <!-- ══════════════════════════════════════════════════ CABEÇALHO -->
 <header>
@@ -823,28 +902,33 @@
 <!-- ══════════════════════════════════════════════════ CORPO -->
 <div class="main-wrap">
 
-  <div class="aviso-lgpd">
-    <span class="ico">🔒</span>
-    <span>
-      <strong>LGPD — Lei 13.709/2018:</strong>
-      Os dados informados serão utilizados exclusivamente para fins de cadastramento no CNES, conforme Portaria de Consolidação nº 1/2017 do Ministério da Saúde.
-    </span>
-  </div>
-
 
   <!-- ══════════════════════════════════ TRIAGEM DE ELEGIBILIDADE -->
   <div id="tela-triagem">
+   <div class="triagem-layout">
 
-    <div class="triagem-capa">
-      <h2>Triagem de elegibilidade e gestão</h2>
-      <p>
-        A SEMSA Manaus é responsável pela gestão da tipologia <strong>Consultório Isolado</strong>.
-        Esta triagem confirma, em resposta ao e-mail enviado, se o estabelecimento se enquadra nessa
-        gestão ou se é elegível para o cadastro.
-      </p>
-    </div>
+    <aside class="triagem-lateral">
+      <div class="triagem-capa">
+        <h2>Triagem de elegibilidade e gestão</h2>
+        <p>
+          A SEMSA Manaus é responsável pela gestão da tipologia <strong>Consultório Isolado</strong>.
+          Esta triagem confirma, em resposta ao e-mail enviado, se o estabelecimento se enquadra
+          nessa gestão ou se é elegível para o cadastro.
+        </p>
+      </div>
+      <div class="aviso-lgpd">
+        <span class="ico">🔒</span>
+        <span>
+          <strong>LGPD — Lei 13.709/2018:</strong>
+          Os dados informados serão utilizados exclusivamente para fins de cadastramento no CNES,
+          conforme Portaria de Consolidação nº 1/2017 do Ministério da Saúde.
+        </span>
+      </div>
+    </aside>
 
-    <div class="card">
+    <div class="triagem-principal">
+
+      <div class="card" id="card-questionario">
       <div class="card-title">Questionário de triagem</div>
 
       <div class="pergunta" id="p-func">
@@ -902,7 +986,10 @@
       </div>
     </div>
 
-    <div id="tri-desfecho" class="desfecho"></div>
+      <div id="tri-desfecho" class="desfecho"></div>
+    </div><!-- /triagem-principal -->
+
+   </div><!-- /triagem-layout -->
   </div>
 
   <div id="area-cadastro" style="display:none">
@@ -924,6 +1011,13 @@
         <button type="button" class="step-tab" onclick="irParaFicha(12)">Ficha 21</button>
       </nav>
       <div class="painel-fichas">
+  <div class="aviso-lgpd">
+    <span class="ico">🔒</span>
+    <span>
+      <strong>LGPD — Lei 13.709/2018:</strong>
+      Os dados informados serão utilizados exclusivamente para fins de cadastramento no CNES, conforme Portaria de Consolidação nº 1/2017 do Ministério da Saúde.
+    </span>
+  </div>
 <div class="form-section" id="ficha-0">
     <div class="section-header">
       <div class="section-icon">🏢</div>
@@ -3655,6 +3749,7 @@ function avaliarTriagem() {
       </div>`;
     painel.scrollIntoView({ behavior: 'smooth', block: 'center' });
     document.getElementById('tri-desfecho').innerHTML = '';
+    document.getElementById('card-questionario').style.display = '';
     return;
   }
   painel.innerHTML = '';
@@ -3679,41 +3774,55 @@ function avaliarTriagem() {
   return _triSim(r);
 }
 
-function _triNao(titulo, texto, comSES) {
+function _mostrarDesfecho(html) {
+  document.getElementById('card-questionario').style.display = 'none';
   const d = document.getElementById('tri-desfecho');
-  d.innerHTML = `
-    <div class="bloco nao">
-      <h3><span>⛔</span> ${titulo}</h3>
-      <div>O estabelecimento <strong>não é elegível</strong> para cadastramento pela SEMSA Manaus neste momento.</div>
-      <div class="encaminhamento">${texto}</div>
-      ${comSES ? `<div class="encaminhamento">${MSG_SES}</div>` : ''}
-      <div class="nav-buttons" style="margin-top:16px">
-        <span></span>
-        <button class="btn btn-secondary" onclick="copiarResposta()">📋 Copiar</button>
-      </div>
-    </div>`;
-  window._triTextoResposta = _montarResposta(titulo, texto, comSES);
+  d.innerHTML = html;
   d.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// Traz o questionário de volta sem apagar as respostas já dadas
+function revisarRespostas() {
+  document.getElementById('tri-desfecho').innerHTML = '';
+  const c = document.getElementById('card-questionario');
+  c.style.display = '';
+  c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function _triNao(titulo, texto, comSES) {
+  _mostrarDesfecho(`
+    <div class="bloco nao">
+      <div class="selo-status">Não elegível</div>
+      <h3>${titulo}</h3>
+      <p class="resumo">O estabelecimento <strong>não é elegível</strong> para cadastramento
+        pela SEMSA Manaus neste momento.</p>
+      <div class="encaminhamento">${texto}</div>
+      ${comSES ? `<div class="encaminhamento destaque">${MSG_SES}</div>` : ''}
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="revisarRespostas()">← Revisar respostas</button>
+        <button class="btn btn-primary" onclick="copiarResposta()">📋 Copiar</button>
+      </div>
+    </div>`);
+  window._triTextoResposta = _montarResposta(titulo, texto, comSES);
+}
+
 function _triSim(r) {
-  const d = document.getElementById('tri-desfecho');
-  d.innerHTML = `
+  _mostrarDesfecho(`
     <div class="bloco sim">
-      <h3><span>✅</span> Estabelecimento elegível</h3>
-      <div>O estabelecimento está em funcionamento, possui licença sanitária vigente e declara
-        <strong>1 consultório</strong>, enquadrando-se como <strong>Consultório Isolado</strong> —
-        tipologia sob gestão da SEMSA Manaus.</div>
-      <div class="encaminhamento">Prossiga para o preenchimento das fichas cadastrais (FCES).
-O campo 2.6 já foi preenchido como <strong>22 — Consultório Isolado</strong>.</div>
-      <div class="nav-buttons" style="margin-top:16px">
-        <span></span>
+      <div class="selo-status ok">Elegível</div>
+      <h3>Estabelecimento elegível para cadastro</h3>
+      <p class="resumo">Em funcionamento, com licença sanitária vigente e
+        <strong>1 consultório</strong> — enquadra-se como <strong>Consultório Isolado</strong>,
+        tipologia sob gestão da SEMSA Manaus.</p>
+      <div class="encaminhamento">O campo <strong>2.6 — Tipo de Estabelecimento</strong> será
+        preenchido automaticamente como <strong>22 — Consultório Isolado</strong>.</div>
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="revisarRespostas()">← Revisar respostas</button>
         <button class="btn btn-primary" onclick="liberarCadastro()">Iniciar preenchimento das fichas →</button>
       </div>
-    </div>`;
+    </div>`);
   window._triTextoResposta = _montarResposta('Estabelecimento elegível',
     'O estabelecimento é elegível para o cadastramento no CNES pela SEMSA Manaus.', false);
-  d.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function _montarResposta(titulo, texto, comSES) {
@@ -3741,6 +3850,7 @@ function copiarResposta() {
 
 // Libera as abas e o preenchimento das fichas
 function liberarCadastro() {
+  document.body.classList.remove('triagem-ativa');
   document.getElementById('tela-triagem').style.display = 'none';
   document.getElementById('area-cadastro').style.display = '';
   const tipo = document.getElementById('tipo_estabelecimento');
@@ -3761,6 +3871,9 @@ function refazerTriagem() {
 
 // Volta da área de fichas para a triagem
 function voltarParaTriagem() {
+  document.body.classList.add('triagem-ativa');
+  document.getElementById('card-questionario').style.display = '';
+  document.getElementById('tri-desfecho').innerHTML = '';
   document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
   document.getElementById('area-cadastro').style.display = 'none';
   document.getElementById('tela-triagem').style.display = '';
@@ -4544,6 +4657,7 @@ function _limparErroDoCampo(ev) {
   const campo = el.closest('.campo');
   if (campo) campo.classList.remove('campo-erro');
   // na triagem, o destaque da pergunta some assim que ela é respondida
+  if (el.id === 'tri_esp') el.value = el.value.toUpperCase();
   const perg = el.closest('.pergunta');
   if (perg && String(el.value || '').trim()) perg.classList.remove('pendente');
 }
